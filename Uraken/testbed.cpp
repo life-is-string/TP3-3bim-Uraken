@@ -6,6 +6,7 @@
  */
 #include "testbed.hpp"
 #include <typeinfo>
+
 void Testbed::displayWorld() {
 	world->Step(1.0 / 60, int32(8), int32(3)); //progress the physics simulation
 	window.clear(sf::Color::Green);
@@ -49,7 +50,7 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 1.0;
 	fixtureDef.friction = 0.4;
-	fixtureDef.restitution = 0.5;
+	fixtureDef.restitution = 0.3;
 	fixtureDef.shape = &b2shape;
 
 	b2Body *element = world->CreateBody(&bodyDef);
@@ -82,9 +83,8 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 
 	//physics attributes def
 	b2FixtureDef fixtureDef;
-	fixtureDef.density = 1.0;
+	fixtureDef.density = 4;
 	fixtureDef.friction = 0.4;
-	fixtureDef.restitution = 0.5;
 	fixtureDef.shape = &b2shape;
 
 	b2Body *element = world->CreateBody(&bodyDef);
@@ -100,11 +100,17 @@ Testbed::Testbed() {
 	window.setFramerateLimit(60);
 	b2Vec2 gravity(0.f, 9.8f);
 	world = new b2World(gravity);
-	player.body = createElement(580, 100, 52, 64, b2_dynamicBody, player.tex);
+	player.body = createElement(500, 100, 52, 64, b2_dynamicBody, player.tex);
+	ground = createElement(400, 590, 800, 30, b2_staticBody); //creates the ground
 
-	createElement(400, 590, 800, 30, b2_staticBody); //creates the ground
-	createElement(200, 450, 100, 30, b2_staticBody); //creates a platform
-	createElement(600, 300, 100, 30, b2_staticBody); //creates a platform
+	//walls
+	createElement(-15, 300, 30, 600, b2_staticBody);
+	createElement(815, 300, 30, 600, b2_staticBody);
+
+	//creates platforms
+	platforms.push_back(createElement(200, 450, 100, 30, b2_staticBody));
+	platforms.push_back(createElement(500, 200, 100, 30, b2_staticBody));
+
 
 }
 void Testbed::Run() {

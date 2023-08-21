@@ -11,12 +11,16 @@
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include "b2_sf_converter.hpp"
+#include <vector>
 
 class Testbed {
 private:
 	Player player;
 	sf::RenderWindow window;
 	b2World *world;
+	b2Body *ground;
+	std::vector <b2Body*> platforms;
+
 public:
 	void displayWorld();
 	b2Body* createElement(int x, int y, int width, int height,
