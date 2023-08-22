@@ -19,7 +19,7 @@ public:
 	sf::Texture *tex;
 	b2Body *body;
 	float ang_vel = 0;
-	bool max_right_ang = false, max_left_ang = false;
+	b2Vec2 linvel;
 	Player() {
 		tex = new sf::Texture;
 		tex->loadFromFile("assets/nenja.png", sf::IntRect(124, 68, 56, 64));
@@ -27,62 +27,73 @@ public:
 	}
 	;
 	void jet(std::string dir) {
+
 		if (dir == "left") {
-			body->ApplyLinearImpulse(b2Vec2(-1.5, -2.5), body->GetWorldCenter(),
+			body->ApplyLinearImpulse(b2Vec2(-2, -2), body->GetWorldCenter(),
 					true);
-			if (!max_left_ang) {
-				ang_vel -= 0.03;
+			linvel = body->GetLinearVelocity();
+			if (linvel.x < -4) {
+				linvel.x = -4;
 			}
-			if (converter::radToDeg<double>(body->GetAngle()) < -15) {
-				max_left_ang = true;
+			if (linvel.y < -4) {
+				linvel.y = -4;
+			}
+			body->SetLinearVelocity(linvel);
+
+			if (converter::radToDeg<double>(body->GetAngle()) > -15) {
+				ang_vel = -0.3;
+			} else {
 				ang_vel = 0;
 			}
+
 			body->SetAngularVelocity(ang_vel);
 
-		}
-		if (dir == "right") {
-			body->ApplyLinearImpulse(b2Vec2(1.5, -2.5), body->GetWorldCenter(),
+		} else if (dir == "right") {
+			body->ApplyLinearImpulse(b2Vec2(2, -2), body->GetWorldCenter(),
 					true);
-			if (!max_right_ang) {
-				ang_vel += 0.03;
+			linvel = body->GetLinearVelocity();
+			if (linvel.x > 4) {
+				linvel.x = 4;
 			}
-			if (converter::radToDeg<double>(body->GetAngle()) > 15) {
-				max_right_ang = true;
-				ang_vel = 0;
+			if (linvel.y < -4) {
+				linvel.y = -4.;
+			}
+			body->SetLinearVelocity(linvel);
+
+			if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+				if (converter::radToDeg<double>(body->GetAngle()) < 15) {
+					ang_vel = 0.3;
+				} else {
+					ang_vel = 0;
+				}
+			} else {
+				if (converter::radToDeg<double>(body->GetAngle()) > 0) {
+					ang_vel = -0.3;
+				} else if (converter::radToDeg<double>(body->GetAngle()) < 0) {
+					ang_vel = 0.3;
+				} else {
+					ang_vel = 0;
+				}
 			}
 			body->SetAngularVelocity(ang_vel);
 		}
 
-		b2Vec2 vel = body->GetLinearVelocity();
-		if (vel.x > 3) {
-			vel.x = 3;
-		}
-		if (vel.y < -5) {
-			vel.y = -5;
-		}
-
-		body->SetLinearVelocity(vel);
 	}
 	void handleInputs() {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
 			jet("left");
-		} else {
-			max_left_ang = true;
-			if (converter::radToDeg<double>(body->GetAngle()) < 0) {
-				ang_vel += 0.03;
-				body->SetAngularVelocity(ang_vel);
-			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
 			jet("right");
-		} else {
-			max_right_ang = true;
-			if (converter::radToDeg<double>(body->GetAngle()) > 0) {
-				ang_vel -= 0.03;
-				body->SetAngularVelocity(ang_vel);
-			}
 		}
-
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)
+				&& sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+			linvel = body->GetLinearVelocity();
+			if (linvel.y < -4) {
+				linvel.y = -4;
+			}
+			body->SetLinearVelocity(linvel);
+		}
 	}
 
 };

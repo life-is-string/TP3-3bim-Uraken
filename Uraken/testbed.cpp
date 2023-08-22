@@ -100,16 +100,16 @@ Testbed::Testbed() {
 	window.setFramerateLimit(60);
 	b2Vec2 gravity(0.f, 9.8f);
 	world = new b2World(gravity);
-	player.body = createElement(500, 100, 52, 64, b2_dynamicBody, player.tex);
+	player.body = createElement(500, 150, 52, 64, b2_dynamicBody, player.tex);
 	ground = createElement(400, 590, 800, 30, b2_staticBody); //creates the ground
 
 	//walls
-	createElement(-15, 300, 30, 600, b2_staticBody);
-	createElement(815, 300, 30, 600, b2_staticBody);
+	//createElement(-15, 300, 30, 600, b2_staticBody);
+	//createElement(815, 300, 30, 600, b2_staticBody);
 
 	//creates platforms
 	platforms.push_back(createElement(200, 450, 100, 30, b2_staticBody));
-	platforms.push_back(createElement(500, 200, 100, 30, b2_staticBody));
+	platforms.push_back(createElement(200, 200, 100, 30, b2_staticBody));
 
 
 }
