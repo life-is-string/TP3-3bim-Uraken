@@ -67,7 +67,7 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 	return element;
 }
 b2Body* Testbed::createElement(int x, int y, int width, int height,
-		b2BodyType type, sf::Texture *tex) {
+		b2BodyType type, sf::Texture *tex, sf::IntRect frame) {
 	//Box2d: creates a polygon object using pixel_to_meters dimensions
 	b2BodyDef bodyDef;
 
@@ -83,24 +83,25 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 
 	//physics attributes def
 	b2FixtureDef fixtureDef;
-	fixtureDef.density = 4;
+	fixtureDef.density = 5;
 	fixtureDef.friction = 0.4;
 	fixtureDef.shape = &b2shape;
 
 	b2Body *element = world->CreateBody(&bodyDef);
 	element->CreateFixture(&fixtureDef);
-	sf::Sprite *sprite = new sf::Sprite(*tex);
+	sf::Sprite *sprite = new sf::Sprite(*tex, frame);
 	sprite->setOrigin(width / 2.0, height / 2.0);
 	sprite->setPosition(sf::Vector2f(x, y));
 	element->SetUserData(sprite);
 	return element;
 }
 Testbed::Testbed() {
-	window.create(sf::VideoMode(800, 600, 32), "Uraken");
+	window.create(sf::VideoMode(1200, 600, 32), "Uraken");
 	window.setFramerateLimit(60);
-	b2Vec2 gravity(0.f, 9.8f);
+	b2Vec2 gravity(0.f, 9.f);
 	world = new b2World(gravity);
-	player.body = createElement(500, 150, 52, 64, b2_dynamicBody, player.tex);
+	player = new Player(elapsedtime);
+	player->body = createElement(500, 150, 52, 64, b2_dynamicBody, player->tex, player->frames[0]);
 	ground = createElement(400, 590, 800, 30, b2_staticBody); //creates the ground
 
 	//walls
@@ -108,19 +109,24 @@ Testbed::Testbed() {
 	//createElement(815, 300, 30, 600, b2_staticBody);
 
 	//creates platforms
-	platforms.push_back(createElement(200, 450, 100, 30, b2_staticBody));
-	platforms.push_back(createElement(200, 200, 100, 30, b2_staticBody));
+	platforms.push_back(createElement(0, 250, 100, 30, b2_staticBody));
+	//platforms.push_back(createElement(200, 200, 100, 30, b2_staticBody));
 
 
 }
 void Testbed::Run() {
 	while (window.isOpen()) {
+		dt = clock.restart().asSeconds();
+		elapsedtime += dt;
+		if(elapsedtime >= 0.9)
+		elapsedtime = 0.3;
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-		player.handleInputs();
+		player->handleInputs();
+		player->animate();
 		displayWorld();
 	}
 }

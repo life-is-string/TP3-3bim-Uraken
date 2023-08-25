@@ -10,6 +10,8 @@
 #define normal_ang 0
 #define max_angvel 2.7
 #include <string>
+#include <cstdio>
+#include <vector>
 #include <iostream>
 #include "b2_sf_converter.hpp"
 #include <SFML/Graphics.hpp>
@@ -18,12 +20,22 @@ class Player {
 public:
 	sf::Texture *tex;
 	b2Body *body;
+	float *elapsedtime;
 	float ang_vel = 0;
 	b2Vec2 linvel;
-	Player() {
-		tex = new sf::Texture;
-		tex->loadFromFile("assets/nenja.png", sf::IntRect(124, 68, 56, 64));
+	std::vector<sf::IntRect> frames;
+
+	Player(float &elapsedtime) {
 		body = NULL;
+		this->elapsedtime = &elapsedtime;
+		frames.push_back(sf::IntRect(4, 0, 56, 64));
+		frames.push_back(sf::IntRect(60, 0, 56, 64));
+		frames.push_back(sf::IntRect(120, 0, 56, 64));
+		frames.push_back(sf::IntRect(0, 68, 56, 64));
+		frames.push_back(sf::IntRect(60, 68, 56, 68));
+		frames.push_back(sf::IntRect(124, 68, 56, 64));
+		tex = new sf::Texture();
+		tex->loadFromFile("assets/nenja.png");
 	}
 	;
 	void jet(std::string dir) {
@@ -32,11 +44,11 @@ public:
 			body->ApplyLinearImpulse(b2Vec2(-2, -2), body->GetWorldCenter(),
 					true);
 			linvel = body->GetLinearVelocity();
-			if (linvel.x < -4) {
-				linvel.x = -4;
+			if (linvel.x < -7.5) {
+				linvel.x = -7.5;
 			}
-			if (linvel.y < -4) {
-				linvel.y = -4;
+			if (linvel.y < -6) {
+				linvel.y = -6;
 			}
 			body->SetLinearVelocity(linvel);
 
@@ -52,11 +64,11 @@ public:
 			body->ApplyLinearImpulse(b2Vec2(2, -2), body->GetWorldCenter(),
 					true);
 			linvel = body->GetLinearVelocity();
-			if (linvel.x > 4) {
-				linvel.x = 4;
+			if (linvel.x > 7.5) {
+				linvel.x = 7.5;
 			}
-			if (linvel.y < -4) {
-				linvel.y = -4.;
+			if (linvel.y < -6) {
+				linvel.y = -6;
 			}
 			body->SetLinearVelocity(linvel);
 
@@ -89,10 +101,27 @@ public:
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)
 				&& sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
 			linvel = body->GetLinearVelocity();
-			if (linvel.y < -4) {
-				linvel.y = -4;
+			if (linvel.y < -7.5) {
+				linvel.y = -7.5;
 			}
 			body->SetLinearVelocity(linvel);
+		}
+	}
+	void animate() {
+		linvel = body->GetLinearVelocity();
+		sf::Sprite *sprite = static_cast<sf::Sprite*>(body->GetUserData());
+		if (linvel.y > 6) {
+			if (*elapsedtime >= 0.3 && *elapsedtime <= 0.6) {
+				sprite->setTextureRect(frames[2]);
+			}
+			if (*elapsedtime >= 0.6 && *elapsedtime <= 0.9) {
+				sprite->setTextureRect(frames[3]);
+			}
+			if (*elapsedtime >= 0.9) {
+				sprite->setTextureRect(frames[4]);
+			}
+		}else{
+			sprite->setTextureRect(frames[0]);
 		}
 	}
 

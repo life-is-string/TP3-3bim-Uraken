@@ -15,7 +15,9 @@
 
 class Testbed {
 private:
-	Player player;
+	float dt, elapsedtime = 0.3;
+	sf::Clock clock;
+	Player *player;
 	sf::RenderWindow window;
 	b2World *world;
 	b2Body *ground;
@@ -26,7 +28,7 @@ public:
 	b2Body* createElement(int x, int y, int width, int height,
 			b2BodyType type);
 	b2Body* createElement(int x, int y, int width, int height,
-				b2BodyType type, sf::Texture *tex);
+				b2BodyType type, sf::Texture *tex, sf::IntRect frame);
 	Testbed();
 	void Run();
 };
