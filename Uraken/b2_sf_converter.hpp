@@ -2,7 +2,7 @@
  * b2_sf_converter.hpp
  *
  *  Created on: 18 de ago. de 2023
- *      Author: user
+ *      Author: Grupo 8
  */
 
 #ifndef B2_SF_CONVERTER_HPP_

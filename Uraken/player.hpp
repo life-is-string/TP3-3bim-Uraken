@@ -2,7 +2,7 @@
  * player.hpp
  *
  *  Created on: 20 de ago. de 2023
- *      Author: hayde
+ *      Author: Grupo 8
  */
 #ifndef PLAYER_HPP_
 #define PLAYER_HPP_
@@ -36,6 +36,7 @@ public:
 		frames.push_back(sf::IntRect(124, 68, 56, 64));
 		tex = new sf::Texture();
 		tex->loadFromFile("assets/nenja.png");
+
 	}
 	;
 	void jet(std::string dir) {
@@ -106,6 +107,7 @@ public:
 			}
 			body->SetLinearVelocity(linvel);
 		}
+
 	}
 	void animate() {
 		linvel = body->GetLinearVelocity();
