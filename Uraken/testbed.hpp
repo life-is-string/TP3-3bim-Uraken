@@ -24,6 +24,7 @@ private:
 	b2World *world;
 	b2Body *ground;
 	std::vector <b2Body*> platforms;
+	std::vector<b2Body*> groundElement;
 	sf::View view; //creation of the view to follow the player
 
 public:
