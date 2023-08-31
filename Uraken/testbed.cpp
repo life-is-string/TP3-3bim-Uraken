@@ -138,11 +138,11 @@ Testbed::Testbed() {
 			player->frames[0]);
 
 	//cria o chão
-	ground = createElement(200, 620, 20000, 90, b2_staticBody); //creates the
+	ground = createElement(200, 620, 16000, 90, b2_staticBody); //creates the
 	groundElement.push_back(ground); //vector for ground, separate to test collision differently
 
 	//up wall
-	createElement(890, -55, 20000, 65, b2_staticBody);
+	//createElement(890, -55, 20000, 65, b2_staticBody);
 
 	//creates platforms
 	platforms.push_back(createElement(130, 510, 112, 31, b2_staticBody)); //1
