@@ -16,6 +16,7 @@
 #include "b2_sf_converter.hpp"
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
+
 class Player {
 public:
 	sf::Texture *tex;
@@ -24,6 +25,27 @@ public:
 	float ang_vel = 0;
 	b2Vec2 linvel;
 	std::vector<sf::IntRect> frames;
+
+	//to test the collisions
+	bool isPlayerOnPlatform(b2Body *platform) {
+		b2AABB playerAABB, platformAABB; //caixa delimitadora AABB, que pega um canto superior e um canto inferior
+		playerAABB.lowerBound = body->GetFixtureList()->GetAABB(0).lowerBound;
+		playerAABB.upperBound = body->GetFixtureList()->GetAABB(0).upperBound;
+		platformAABB.lowerBound =
+				platform->GetFixtureList()->GetAABB(0).lowerBound;
+		platformAABB.upperBound =
+				platform->GetFixtureList()->GetAABB(0).upperBound;
+
+		float playerBottom = playerAABB.upperBound.y;
+		float platformTop = platformAABB.lowerBound.y;
+
+		//margem para lidar com possíveis problemas
+		float margin = 0.01;
+
+		//ve se o jogador esta perto o suficiente do topo da plataforma
+		return playerBottom >= platformTop - margin
+				&& playerBottom <= platformTop + margin;
+	}
 
 	Player(float &elapsedtime) {
 		body = NULL;
@@ -122,7 +144,7 @@ public:
 			if (*elapsedtime >= 0.9) {
 				sprite->setTextureRect(frames[4]);
 			}
-		}else{
+		} else {
 			sprite->setTextureRect(frames[0]);
 		}
 	}

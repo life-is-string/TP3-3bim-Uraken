@@ -5,6 +5,7 @@
  *      Author: Grupo 8
  */
 #include "testbed.hpp"
+#include "player.hpp"
 #include <typeinfo>
 
 void Testbed::displayWorld() {
@@ -167,6 +168,14 @@ void Testbed::Run() {
 		}
 		player->handleInputs();
 		player->animate();
+		//verifica se a "caixa" do player esta em contato com a plataforma do chão
+		if (player->isPlayerOnPlatform(ground)) {
+			for (b2Body *groundElement : groundElement) {
+				if (player->isPlayerOnPlatform(groundElement)) {
+					window.close(); // Fecha o jogo se o jogador cair no chão
+				}
+			}
+		}
 		displayWorld();
 	}
 }

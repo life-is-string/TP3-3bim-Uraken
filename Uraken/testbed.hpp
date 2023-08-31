@@ -27,6 +27,7 @@ private:
 	std::vector<b2Body*> groundElement;
 	sf::View view; //creation of the view to follow the player
 
+
 public:
 	void displayWorld();
 	b2Body* createElement(int x, int y, int width, int height,
@@ -36,5 +37,7 @@ public:
 	Testbed();
 	void Run();
 };
+
+
 
 #endif /* TESTBED_HPP_ */
