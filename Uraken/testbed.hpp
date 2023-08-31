@@ -19,7 +19,7 @@ private:
 	float dt, elapsedtime = 0.3;
 	sf::Clock clock;
 	Player *player;
-	/////Fundo *fundo;
+	Fundo *fundo;
 	sf::RenderWindow window;
 	b2World *world;
 	b2Body *ground;

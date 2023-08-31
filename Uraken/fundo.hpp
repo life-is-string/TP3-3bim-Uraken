@@ -24,6 +24,14 @@ public:
 	sf::Sprite background2;
 	sf::Sprite background3;
 	sf::Sprite background4;
+	sf::Sprite background5;
+	sf::Sprite background6;
+	sf::Sprite background7;
+	sf::Sprite background8;
+	sf::Sprite background9;
+	sf::Sprite background10;
+	sf::Sprite background11;
+	sf::Sprite background12;
 
 	Fundo(){
 		fundo1.loadFromFile("assets/fundo1.png");
@@ -35,19 +43,63 @@ public:
 		background2.setTexture(fundo2);
 		background3.setTexture(fundo3);
 		background4.setTexture(fundo4);
+		background5.setTexture(fundo1);
+		background6.setTexture(fundo2);
+		background7.setTexture(fundo3);
+		background8.setTexture(fundo4);
+		background9.setTexture(fundo1);
+		background10.setTexture(fundo2);
+		background11.setTexture(fundo3);
+		background12.setTexture(fundo4);
 
 		//definição os sprites
-		background.setPosition(0, -40);
-		background.setScale(1.8, 1.8);
+		background.setPosition(-300, -40);
+		background.setScale(0.6, 0.6);
+		background.setColor({250,250,250,180});
 
-		background2.setPosition(0, 40);
-		background2.setScale(1.8, 1.8);
+		background2.setPosition(387, -40);
+		background2.setScale(0.6, 0.6);
+		background2.setColor({250,250,250,180});
 
-		background3.setPosition(0, -40);
-		background3.setScale(1.8, 1.8);
+		background3.setPosition(1074, -40);
+		background3.setScale(0.6, 0.6);
+		background3.setColor({250,250,250,180});
 
-		background4.setPosition(0, -40);
-		background4.setScale(1.8, 1.8);
+		background4.setPosition(1766.4, -40);
+		background4.setScale(0.6, 0.6);
+		background4.setColor({250,250,250,180});
+
+		background5.setPosition(2452.2, -40);
+		background5.setScale(0.6, 0.6);
+		background5.setColor( { 250, 250, 250, 180 });
+
+		background6.setPosition(3139.2, -40);
+		background6.setScale(0.6, 0.6);
+		background6.setColor( { 250, 250, 250, 180 });
+
+		background7.setPosition(3826.2, -40);
+		background7.setScale(0.6, 0.6);
+		background7.setColor( { 250, 250, 250, 180 });
+
+		background8.setPosition(4518.6, -40);
+		background8.setScale(0.6, 0.6);
+		background8.setColor( { 250, 250, 250, 180 });
+
+		background9.setPosition(5204.4, -40);
+		background9.setScale(0.6, 0.6);
+		background9.setColor( { 250, 250, 250, 180 });
+
+		background10.setPosition(5891.4, -40);
+		background10.setScale(0.6, 0.6);
+		background10.setColor( { 250, 250, 250, 180 });
+
+		background11.setPosition(6578.4, -40);
+		background11.setScale(0.6, 0.6);
+		background11.setColor( { 250, 250, 250, 180 });
+
+		background12.setPosition(7270.8, -40);
+		background12.setScale(0.6, 0.6);
+		background12.setColor( { 250, 250, 250, 180 });
 
 	}
 };

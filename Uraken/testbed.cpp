@@ -13,8 +13,18 @@ void Testbed::displayWorld() {
 	window.clear();
 	world->Step(1.0 / 60, int32(8), int32(3)); //progress the physics simulation
 
-	//fundo = new Fundo;
-	//window.draw(fundo);
+	window.draw(fundo->background);
+	window.draw(fundo->background2);
+	window.draw(fundo->background3);
+	window.draw(fundo->background4);
+	window.draw(fundo->background5);
+	window.draw(fundo->background6);
+	window.draw(fundo->background7);
+	window.draw(fundo->background8);
+	window.draw(fundo->background9);
+	window.draw(fundo->background10);
+	window.draw(fundo->background11);
+	window.draw(fundo->background12);
 
 	view.setSize(900, 600); //setting the size of the view 700, 400
 	view.zoom(0.9f);
@@ -114,6 +124,8 @@ Testbed::Testbed() {
 	window.create(sf::VideoMode(900, 600, 32), "Uraken");
 	window.setFramerateLimit(60);
 	b2Vec2 gravity(0.f, 9.f);
+	
+	fundo = new Fundo;
 
 	//Icone da janela.
 	sf::Image image = sf::Image { };
