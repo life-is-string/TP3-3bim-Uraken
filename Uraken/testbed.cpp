@@ -25,14 +25,14 @@ void Testbed::displayWorld() {
 	window.draw(fundo->background10);
 	window.draw(fundo->background11);
 	window.draw(fundo->background12);
+	//fundo->draw(window);
 
 	view.setSize(900, 600); //setting the size of the view 700, 400
-	view.zoom(0.9f);
+	view.zoom(0.85f);
+	vpos.x = player->body->GetPosition().x * 32;
+	vpos.y = player->body->GetPosition().y * 26;
+	view.setCenter(vpos);
 	window.setView(view);
-	sf::Vector2f pos;
-	pos.x = player->body->GetPosition().x * 32;
-	pos.y = player->body->GetPosition().y * 22;
-	view.setCenter(pos);
 
 	for (b2Body *body = world->GetBodyList(); body != nullptr;
 			body = body->GetNext()) { //this for sets as "i" a body from the world, and iterates to the next one until there isn't more bodies
@@ -53,10 +53,13 @@ void Testbed::displayWorld() {
 			window.draw(*shape);
 		}
 	}
+
+	window.draw(fueldisplay->sprite);
+
 	window.display();
 }
 b2Body* Testbed::createElement(int x, int y, int width, int height,
-		b2BodyType type) {
+		b2BodyType type, sf::Color color = sf::Color::Red) {
 	//Box2d: creates a polygon object using pixel_to_meters dimensions
 	b2BodyDef bodyDef;
 
@@ -84,7 +87,7 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 	sf::Shape *shape = new sf::RectangleShape(sf::Vector2f(width, height));
 	shape->setOrigin(width / 2.0, height / 2.0);
 	shape->setPosition(sf::Vector2f(x, y));
-	shape->setFillColor(sf::Color::Blue);
+	shape->setFillColor(color);
 	element->SetUserData(shape);
 
 	//pointer for graphical representation
@@ -124,9 +127,8 @@ Testbed::Testbed() {
 	window.create(sf::VideoMode(900, 600, 32), "Uraken");
 	window.setFramerateLimit(60);
 	b2Vec2 gravity(0.f, 9.f);
-	
-	fundo = new Fundo;
 
+	fundo = new Fundo;
 	//Icone da janela.
 	sf::Image image = sf::Image { };
 	image.loadFromFile("assets/ninja.png");
@@ -134,37 +136,41 @@ Testbed::Testbed() {
 
 	world = new b2World(gravity);
 	player = new Player(elapsedtime);
+	fueldisplay = new Fuel;
 	player->body = createElement(130, 150, 52, 64, b2_dynamicBody, player->tex,
 			player->frames[0]);
 
 	//cria o chão
-	ground = createElement(200, 620, 16000, 90, b2_staticBody); //creates the
-	groundElement.push_back(ground); //vector for ground, separate to test collision differently
-
+	ground = createElement(200, 620, 16000, 90, b2_staticBody,
+			sf::Color::Yellow); //creates the ground
 	//up wall
 	//createElement(890, -55, 20000, 65, b2_staticBody);
 
 	//creates platforms
-	platforms.push_back(createElement(130, 510, 112, 31, b2_staticBody)); //1
-	platforms.push_back(createElement(420, 440, 112, 31, b2_staticBody)); //2
-	platforms.push_back(createElement(770, 490, 112, 31, b2_staticBody)); //3
-	platforms.push_back(createElement(1150, 430, 112, 31, b2_staticBody)); //4
-	platforms.push_back(createElement(1500, 480, 112, 31, b2_staticBody)); //5
-	platforms.push_back(createElement(1850, 460, 112, 31, b2_staticBody)); //6
-	platforms.push_back(createElement(2180, 400, 112, 31, b2_staticBody)); //7
-	platforms.push_back(createElement(2550, 320, 112, 31, b2_staticBody)); //8
-	platforms.push_back(createElement(2850, 402, 112, 31, b2_staticBody)); //9
-	platforms.push_back(createElement(3260, 460, 112, 31, b2_staticBody)); //10
-	platforms.push_back(createElement(3660, 470, 112, 31, b2_staticBody)); //11
-	platforms.push_back(createElement(4000, 530, 112, 31, b2_staticBody)); //12
-	platforms.push_back(createElement(4400, 490, 112, 31, b2_staticBody)); //13
-	platforms.push_back(createElement(4800, 530, 112, 31, b2_staticBody)); //14
-	platforms.push_back(createElement(5195, 475, 112, 31, b2_staticBody)); //15
-	platforms.push_back(createElement(5600, 530, 112, 31, b2_staticBody)); //16
-	platforms.push_back(createElement(5920, 450, 112, 31, b2_staticBody)); //17
-	platforms.push_back(createElement(6300, 515, 112, 31, b2_staticBody)); //18
-	platforms.push_back(createElement(6700, 465, 112, 31, b2_staticBody)); //19
-	platforms.push_back(createElement(7200, 430, 112, 31, b2_staticBody)); //20
+	for (int i = 0; i < 20; i++) {
+		Platform platform(i + 1);
+		platforms.push_back(platform);
+	}
+	platforms[0].body = (createElement(130, 510, 112, 31, b2_staticBody)); //1
+	platforms[1].body = (createElement(420, 440, 112, 31, b2_staticBody)); //2
+	platforms[2].body = (createElement(770, 490, 112, 31, b2_staticBody)); //3
+	platforms[3].body = (createElement(1150, 430, 112, 31, b2_staticBody)); //4
+	platforms[4].body = (createElement(1500, 480, 112, 31, b2_staticBody)); //5
+	platforms[5].body = (createElement(1850, 460, 112, 31, b2_staticBody)); //6
+	platforms[6].body = (createElement(2180, 400, 112, 31, b2_staticBody)); //7
+	platforms[7].body = (createElement(2550, 320, 112, 31, b2_staticBody)); //8
+	platforms[8].body = (createElement(2850, 402, 112, 31, b2_staticBody)); //9
+	platforms[9].body = (createElement(3260, 460, 112, 31, b2_staticBody)); //10
+	platforms[10].body = (createElement(3660, 470, 112, 31, b2_staticBody)); //11
+	platforms[11].body = (createElement(4000, 530, 112, 31, b2_staticBody)); //12
+	platforms[12].body = (createElement(4400, 490, 112, 31, b2_staticBody)); //13
+	platforms[13].body = (createElement(4800, 530, 112, 31, b2_staticBody)); //14
+	platforms[14].body = (createElement(5195, 475, 112, 31, b2_staticBody)); //15
+	platforms[15].body = (createElement(5600, 530, 112, 31, b2_staticBody)); //16
+	platforms[16].body = (createElement(5920, 450, 112, 31, b2_staticBody)); //17
+	platforms[17].body = (createElement(6300, 515, 112, 31, b2_staticBody)); //18
+	platforms[18].body = (createElement(6700, 465, 112, 31, b2_staticBody)); //19
+	platforms[19].body = (createElement(7200, 430, 112, 31, b2_staticBody)); //20
 
 }
 void Testbed::Run() {
@@ -178,17 +184,15 @@ void Testbed::Run() {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-		player->handleInputs();
-		player->animate();
 		//verifica se a "caixa" do player esta em contato com a plataforma do chão
 		if (player->isPlayerOnPlatform(ground)) {
-			for (b2Body *groundElement : groundElement) {
-				if (player->isPlayerOnPlatform(groundElement)) {
-					window.close(); // Fecha o jogo se o jogador cair no chão
-				}
-			}
+			window.close(); // Fecha o jogo se o jogador cair no chão
 		}
+
+		player->update();
+		fueldisplay->update(player->fuel, vpos);
 		displayWorld();
 	}
+
 }
 

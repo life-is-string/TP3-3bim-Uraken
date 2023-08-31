@@ -8,6 +8,8 @@
 #ifndef TESTBED_HPP_
 #define TESTBED_HPP_
 #include "player.hpp"
+#include "fuel.hpp"
+#include "platform.hpp"
 #include "fundo.hpp"
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
@@ -16,22 +18,24 @@
 
 class Testbed {
 private:
+
+	sf::Vector2f vpos;
 	float dt, elapsedtime = 0.3;
 	sf::Clock clock;
+	Fuel *fueldisplay;
 	Player *player;
 	Fundo *fundo;
+	b2Body *ground;
 	sf::RenderWindow window;
 	b2World *world;
-	b2Body *ground;
-	std::vector <b2Body*> platforms;
-	std::vector<b2Body*> groundElement;
+	std::vector <Platform> platforms;
 	sf::View view; //creation of the view to follow the player
 
 
 public:
 	void displayWorld();
 	b2Body* createElement(int x, int y, int width, int height,
-			b2BodyType type);
+			b2BodyType type, sf::Color color);
 	b2Body* createElement(int x, int y, int width, int height,
 				b2BodyType type, sf::Texture *tex, sf::IntRect frame);
 	Testbed();

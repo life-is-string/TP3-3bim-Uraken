@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 
 	Testbed space;
 	space.Run();
-
+	return 0;
 }
 
 

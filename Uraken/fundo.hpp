@@ -20,6 +20,7 @@ public:
 	sf::Texture fundo2;
 	sf::Texture fundo3;
 	sf::Texture fundo4;
+	//fazer um vector de backgrounds pra facilitar sua vida :)
 	sf::Sprite background;
 	sf::Sprite background2;
 	sf::Sprite background3;
@@ -101,6 +102,10 @@ public:
 		background12.setScale(0.6, 0.6);
 		background12.setColor( { 250, 250, 250, 180 });
 
+	}
+	void draw(sf::RenderWindow &window){
+		//https://i0.wp.com/blog.feabhas.com/wp-content/uploads/2015/07/image20.png
+		//window.draw(backgrounds[i]);
 	}
 };
 
