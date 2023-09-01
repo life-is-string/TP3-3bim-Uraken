@@ -26,7 +26,7 @@ Player::Player(float &elapsedtime) {
 	fuel = 50;
 	checkpoint = NULL;
 }
-bool Player::isPlayerOnPlatform(b2Body *platform) {
+/*bool Player::isPlayerOnPlatform(b2Body *platform) {
 	b2AABB playerAABB, platformAABB; //caixa delimitadora AABB, que pega um canto superior e um canto inferior
 	playerAABB.lowerBound = body->GetFixtureList()->GetAABB(0).lowerBound;
 	playerAABB.upperBound = body->GetFixtureList()->GetAABB(0).upperBound;
@@ -42,7 +42,7 @@ bool Player::isPlayerOnPlatform(b2Body *platform) {
 	//ve se o jogador esta perto o suficiente do topo da plataforma
 	return playerBottom >= platformTop - margin
 			&& playerBottom <= platformTop + margin;
-}
+}*/
 
 void Player::handleFuel() {
 	if (isjetting && fuel > 0 && *elapsedtime >= 0.3 && *elapsedtime <= 0.6){

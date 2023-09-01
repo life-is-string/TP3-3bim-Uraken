@@ -42,7 +42,7 @@ public:
 	b2Vec2 linvel;
 
 	Player(float &elapsedtime);
-	bool isPlayerOnPlatform(b2Body *platform);
+	//bool isPlayerOnPlatform(b2Body *platform);
 	void update();
 
 };

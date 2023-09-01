@@ -138,6 +138,7 @@ Testbed::Testbed() {
 	window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
 	world = new b2World(gravity);
+
 	player = new Player(elapsedtime);
 	fueldisplay = new Fuel;
 	player->body = createElement(130, 150, 52, 64, b2_dynamicBody, player->tex,
@@ -175,6 +176,9 @@ Testbed::Testbed() {
 	platforms[18].body = (createElement(6700, 465, 112, 31, b2_staticBody)); //19
 	platforms[19].body = (createElement(7200, 430, 112, 31, b2_staticBody)); //20
 
+	MyContactListener contactListener(player->body, ground, &window);
+	world->SetContactListener(&contactListener);
+
 }
 void Testbed::Run() {
 	while (window.isOpen()) {
@@ -188,9 +192,9 @@ void Testbed::Run() {
 				window.close();
 		}
 		//verifica se a "caixa" do player esta em contato com a plataforma do chão
-		if (player->isPlayerOnPlatform(ground)) {
-			window.close(); // Fecha o jogo se o jogador cair no chão
-		}
+		/*if (player->isPlayerOnPlatform(ground)) {
+		 window.close(); // Fecha o jogo se o jogador cair no chão
+		 }*/
 
 		player->update();
 		fueldisplay->update(player->fuel, vpos);

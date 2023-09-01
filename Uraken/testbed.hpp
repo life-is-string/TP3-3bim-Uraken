@@ -11,6 +11,7 @@
 #include "fuel.hpp"
 #include "platform.hpp"
 #include "fundo.hpp"
+#include "myContactListener.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
 
