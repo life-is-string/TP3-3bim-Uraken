@@ -127,7 +127,10 @@ Testbed::Testbed() {
 	window.create(sf::VideoMode(900, 600, 32), "Uraken");
 	window.setFramerateLimit(60);
 	b2Vec2 gravity(0.f, 9.f);
-
+	music.openFromFile("assets/naruto-blue-bird.wav");
+	music.setLoop(true);
+	music.setVolume(25);
+	music.play();
 	fundo = new Fundo;
 	//Icone da janela.
 	sf::Image image = sf::Image { };

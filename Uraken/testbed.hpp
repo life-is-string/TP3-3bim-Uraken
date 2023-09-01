@@ -12,13 +12,15 @@
 #include "platform.hpp"
 #include "fundo.hpp"
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio/Music.hpp>
+
 #include <Box2D/Box2D.h>
 #include "b2_sf_converter.hpp"
 #include <vector>
 
 class Testbed {
 private:
-
+	sf::Music music;
 	sf::Vector2f vpos;
 	float dt, elapsedtime = 0.3;
 	sf::Clock clock;

@@ -16,10 +16,14 @@
 #include <iostream>
 #include "b2_sf_converter.hpp"
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <Box2D/Box2D.h>
 
 class Player {
 private:
+	sf::Clock clock;
+	sf::SoundBuffer jetbuf;
+	sf::Sound jetting;
 	float ang_vel = 0;
 	bool isjetting, nofuel;
 	void handleFuel();

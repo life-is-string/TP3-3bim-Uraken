@@ -15,6 +15,10 @@ Player::Player(float &elapsedtime) {
 	frames.push_back(sf::IntRect(0, 68, 56, 64));
 	frames.push_back(sf::IntRect(60, 68, 56, 68));
 	frames.push_back(sf::IntRect(124, 68, 56, 64));
+	jetbuf.loadFromFile("assets/jetting.wav");
+	jetting.setBuffer(jetbuf);
+	jetting.setLoop(true);
+	jetting.play();
 	tex = new sf::Texture();
 	tex->loadFromFile("assets/nenja.png");
 	isjetting = false;
@@ -41,8 +45,9 @@ bool Player::isPlayerOnPlatform(b2Body *platform) {
 }
 
 void Player::handleFuel() {
-	if (isjetting && fuel > 0 && *elapsedtime >= 0.3 && *elapsedtime <= 0.6)
+	if (isjetting && fuel > 0 && *elapsedtime >= 0.3 && *elapsedtime <= 0.6){
 		fuel -= 0.25;
+	}
 	if (fuel == 0)
 		nofuel = true;
 }
@@ -135,9 +140,15 @@ void Player::animate() {
 	}
 }
 void Player::update() {
+
 	animate();
 	handleFuel();
 	if (!nofuel)
 		handleInputs();
+	if(isjetting){
+		jetting.setVolume(100);
+	}else{
+		jetting.setVolume(0);
+	}
 }
 
