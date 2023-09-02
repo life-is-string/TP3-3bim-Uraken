@@ -13,6 +13,7 @@ void Testbed::displayWorld() {
 	window.clear();
 	world->Step(1.0 / 60, int32(8), int32(3)); //progress the physics simulation
 
+	window.draw(fundo->background0);
 	window.draw(fundo->background);
 	window.draw(fundo->background2);
 	window.draw(fundo->background3);
@@ -27,7 +28,7 @@ void Testbed::displayWorld() {
 	window.draw(fundo->background12);
 	//fundo->draw(window);
 
-	view.setSize(900, 600); //setting the size of the view 700, 400
+	view.setSize(900, 600); //setting the size of the view 900, 600
 	view.zoom(0.85f);
 	vpos.x = player->body->GetPosition().x * 32;
 	vpos.y = player->body->GetPosition().y * 26;
@@ -59,7 +60,7 @@ void Testbed::displayWorld() {
 	window.display();
 }
 b2Body* Testbed::createElement(int x, int y, int width, int height,
-		b2BodyType type, sf::Color color = sf::Color::Red) {
+		b2BodyType type, sf::Color color = {233,150,122}) {
 	//Box2d: creates a polygon object using pixel_to_meters dimensions
 	b2BodyDef bodyDef;
 
@@ -143,11 +144,25 @@ Testbed::Testbed() {
 	player->body = createElement(130, 150, 52, 64, b2_dynamicBody, player->tex,
 			player->frames[0]);
 
-	//cria o chão
-	ground = createElement(200, 620, 16000, 90, b2_staticBody,
-			sf::Color::Yellow); //creates the ground
+	//Paredes do jogo (para definir os limites de voo)
+	//ground
+	ground = createElement(200, 660, 16000, 170, b2_staticBody,
+			sf::Color::Transparent); //creates the ground
+
+	createElement(200, 692, 16000, 170, b2_staticBody,
+				sf::Color{159,159,159});
+
+	//left wall
+	createElement(-320, 660, 16, 1800, b2_staticBody,
+			sf::Color::Transparent);
+
+	//right wall
+	createElement(7600, 660, 16, 1800, b2_staticBody,
+			sf::Color::Transparent);
+
 	//up wall
-	//createElement(890, -55, 20000, 65, b2_staticBody);
+	createElement(-985.8, -530, 20000, 1000, b2_staticBody,
+			sf::Color{176,176,176});
 
 	//creates platforms
 	for (int i = 0; i < 20; i++) {

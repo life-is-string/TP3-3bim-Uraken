@@ -21,6 +21,7 @@ public:
 	sf::Texture fundo3;
 	sf::Texture fundo4;
 	//fazer um vector de backgrounds pra facilitar sua vida :)
+	sf::Sprite background0;
 	sf::Sprite background;
 	sf::Sprite background2;
 	sf::Sprite background3;
@@ -40,6 +41,7 @@ public:
 		fundo3.loadFromFile("assets/fundo3.png");
 		fundo4.loadFromFile("assets/fundo4.png");
 
+		background0.setTexture(fundo4);
 		background.setTexture(fundo1);
 		background2.setTexture(fundo2);
 		background3.setTexture(fundo3);
@@ -54,6 +56,10 @@ public:
 		background12.setTexture(fundo4);
 
 		//definição os sprites
+		background0.setPosition(-985.8, -40);
+		background0.setScale(0.6, 0.6);
+		background0.setColor( { 250, 250, 250, 180 });
+
 		background.setPosition(-300, -40);
 		background.setScale(0.6, 0.6);
 		background.setColor({250,250,250,180});
