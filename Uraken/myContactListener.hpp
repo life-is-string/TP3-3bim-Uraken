@@ -8,25 +8,35 @@
 #ifndef MYCONTACTLISTENER_HPP_
 #define MYCONTACTLISTENER_HPP_
 
-#include "player.hpp"
-#include "testbed.hpp"
-#include <SFML/Graphics.hpp>
-
 #include <Box2D/Box2D.h>
-#include "b2_sf_converter.hpp"
+#include <SFML/Graphics.hpp>
 
 class MyContactListener: public b2ContactListener {
 private:
-	//corpo player, ground, window
 	b2Body *playerBody, *ground;
 	sf::RenderWindow *window;
-
 public:
+	MyContactListener(b2Body *playerBody, b2Body *ground, sf::RenderWindow *window) : playerBody(playerBody), ground(ground), window(window){}
+	void BeginContact(b2Contact *contact) override{
+		b2Fixture *fixtureA = contact->GetFixtureA();
+		b2Fixture *fixtureB = contact->GetFixtureB();
 
-	MyContactListener(b2Body *playerBody, b2Body *ground, sf::RenderWindow *window);
+		if (fixtureA->IsSensor() || fixtureB->IsSensor()) {
+			//nao vai fazer nada se o corpo A ou B for um sensor
+			return;
+		}
 
-	void BeginContact(b2Contact *contact);
+		b2Body *bodyA = fixtureA->GetBody();
+		b2Body *bodyB = fixtureB->GetBody();
 
+		if (bodyA == nullptr || bodyB == nullptr) {
+			return;
+		}
+
+		if ((bodyA == playerBody && bodyB == ground) || (bodyA == ground && bodyB == playerBody)) {
+			window->close();
+		}
+	};
 };
 
 #endif /* MYCONTACTLISTENER_HPP_ */

@@ -21,6 +21,7 @@
 
 class Testbed {
 private:
+	MyContactListener *contactListener;
 	sf::Music music;
 	sf::Vector2f vpos;
 	float dt, elapsedtime = 0.3;
@@ -29,7 +30,7 @@ private:
 	Player *player;
 	Fundo *fundo;
 	b2Body *ground;
-	sf::RenderWindow window;
+	sf::RenderWindow *window;
 	b2World *world;
 	std::vector <Platform> platforms;
 	sf::View view; //creation of the view to follow the player

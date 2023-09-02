@@ -10,22 +10,22 @@
 
 void Testbed::displayWorld() {
 
-	window.clear();
+	window->clear();
 	world->Step(1.0 / 60, int32(8), int32(3)); //progress the physics simulation
 
-	window.draw(fundo->background0);
-	window.draw(fundo->background);
-	window.draw(fundo->background2);
-	window.draw(fundo->background3);
-	window.draw(fundo->background4);
-	window.draw(fundo->background5);
-	window.draw(fundo->background6);
-	window.draw(fundo->background7);
-	window.draw(fundo->background8);
-	window.draw(fundo->background9);
-	window.draw(fundo->background10);
-	window.draw(fundo->background11);
-	window.draw(fundo->background12);
+	window->draw(fundo->background0);
+	window->draw(fundo->background);
+	window->draw(fundo->background2);
+	window->draw(fundo->background3);
+	window->draw(fundo->background4);
+	window->draw(fundo->background5);
+	window->draw(fundo->background6);
+	window->draw(fundo->background7);
+	window->draw(fundo->background8);
+	window->draw(fundo->background9);
+	window->draw(fundo->background10);
+	window->draw(fundo->background11);
+	window->draw(fundo->background12);
 	//fundo->draw(window);
 
 	view.setSize(900, 600); //setting the size of the view 900, 600
@@ -33,7 +33,7 @@ void Testbed::displayWorld() {
 	vpos.x = player->body->GetPosition().x * 32;
 	vpos.y = player->body->GetPosition().y * 26;
 	view.setCenter(vpos);
-	window.setView(view);
+	window->setView(view);
 
 	for (b2Body *body = world->GetBodyList(); body != nullptr;
 			body = body->GetNext()) { //this for sets as "i" a body from the world, and iterates to the next one until there isn't more bodies
@@ -43,7 +43,7 @@ void Testbed::displayWorld() {
 					converter::metersToPixels(body->GetPosition().x),
 					converter::metersToPixels(body->GetPosition().y));
 			sprite->setRotation(converter::radToDeg<double>(body->GetAngle()));
-			window.draw(*sprite);
+			window->draw(*sprite);
 
 		} else {
 			sf::Shape *shape = static_cast<sf::Shape*>(body->GetUserData()); //grabs the graphical representation pointer
@@ -51,13 +51,13 @@ void Testbed::displayWorld() {
 			shape->setPosition(converter::metersToPixels(body->GetPosition().x),
 					converter::metersToPixels(body->GetPosition().y));
 			shape->setRotation(converter::radToDeg<double>(body->GetAngle()));
-			window.draw(*shape);
+			window->draw(*shape);
 		}
 	}
 
-	window.draw(fueldisplay->sprite);
+	window->draw(fueldisplay->sprite);
 
-	window.display();
+	window->display();
 }
 b2Body* Testbed::createElement(int x, int y, int width, int height,
 		b2BodyType type, sf::Color color = {233,150,122}) {
@@ -125,8 +125,8 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 }
 
 Testbed::Testbed() {
-	window.create(sf::VideoMode(900, 600, 32), "Uraken");
-	window.setFramerateLimit(60);
+	window = new sf::RenderWindow(sf::VideoMode(900, 600, 32), "Uraken");
+	window->setFramerateLimit(60);
 	b2Vec2 gravity(0.f, 9.f);
 	music.openFromFile("assets/naruto-blue-bird.wav");
 	music.setLoop(true);
@@ -136,7 +136,7 @@ Testbed::Testbed() {
 	//Icone da janela.
 	sf::Image image = sf::Image { };
 	image.loadFromFile("assets/ninja.png");
-	window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+	window->setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
 	world = new b2World(gravity);
 
@@ -191,20 +191,20 @@ Testbed::Testbed() {
 	platforms[18].body = (createElement(6700, 465, 112, 31, b2_staticBody)); //19
 	platforms[19].body = (createElement(7200, 430, 112, 31, b2_staticBody)); //20
 
-	MyContactListener contactListener(player->body, ground, &window);
-	world->SetContactListener(&contactListener);
+	contactListener = new MyContactListener(player->body, ground, window);
+	world->SetContactListener(contactListener);
 
 }
 void Testbed::Run() {
-	while (window.isOpen()) {
+	while (window->isOpen()) {
 		dt = clock.restart().asSeconds();
 		elapsedtime += dt;
 		if (elapsedtime >= 0.9)
 			elapsedtime = 0.3;
 		sf::Event event;
-		while (window.pollEvent(event)) {
+		while (window->pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
-				window.close();
+				window->close();
 		}
 		//verifica se a "caixa" do player esta em contato com a plataforma do chão
 		/*if (player->isPlayerOnPlatform(ground)) {
