@@ -63,6 +63,7 @@ public:
 					}else if(player->checkpoint != i){ //new checkpoint
 						sucess.play();
 						player->checkpoint = i;
+						player->fuel = 25;
 					}
 				}
 			}

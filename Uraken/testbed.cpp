@@ -24,8 +24,8 @@ void Testbed::displayWorld() {
 	window->draw(fundo->background10);
 	window->draw(fundo->background11);
 	window->draw(fundo->background12);
-	//fundo->draw(window);
 
+	//fundo->draw(window);
 	view.setSize(900, 600); //setting the size of the view 900, 600
 	view.zoom(0.85f);
 	vpos.x = player->body->GetPosition().x * 32;
@@ -54,11 +54,14 @@ void Testbed::displayWorld() {
 	}
 
 	window->draw(fueldisplay->sprite);
+	for (auto i : bamboos) {
+		window->draw(*i);
+	}
 
 	window->display();
 }
 b2Body* Testbed::createElement(int x, int y, int width, int height,
-		b2BodyType type, sf::Color color = {204, 51, 0}) {
+		b2BodyType type, sf::Color color = sf::Color::Transparent) {
 	//Box2d: creates a polygon object using pixel_to_meters dimensions
 	b2BodyDef bodyDef;
 
@@ -149,19 +152,17 @@ Testbed::Testbed() {
 			sf::Color::Transparent); //creates the ground
 
 	createElement(200, 692, 16000, 170, b2_staticBody,
-				sf::Color{159,159,159});
+			sf::Color { 159, 159, 159 });
 
 	//left wall
-	createElement(-320, 660, 16, 1800, b2_staticBody,
-			sf::Color::Transparent);
+	createElement(-320, 660, 16, 1800, b2_staticBody, sf::Color::Transparent);
 
 	//right wall
-	createElement(7600, 660, 16, 1800, b2_staticBody,
-			sf::Color::Transparent);
+	createElement(7600, 660, 16, 1800, b2_staticBody, sf::Color::Transparent);
 
 	//up wall
-	createElement(-985.8, -530, 20000, 1000, b2_staticBody,
-			sf::Color{176,176,176});
+	createElement(-985.8, -530, 20000, 1000, b2_staticBody, sf::Color { 176,
+			176, 176 });
 
 	//creates platforms
 
@@ -185,6 +186,22 @@ Testbed::Testbed() {
 	platforms.push_back(createElement(6300, 515, 112, 31, b2_staticBody)); //18
 	platforms.push_back(createElement(6700, 465, 112, 31, b2_staticBody)); //19
 	platforms.push_back(createElement(7200, 430, 112, 31, b2_staticBody)); //20
+
+	sf::Texture *bambootex;
+	bambootex = new sf::Texture;
+	bambootex->loadFromFile("assets/bamboo.png");
+	for (int i = 0; i < 20; i++) {
+		sf::Sprite *bamboo;
+		bamboo = new sf::Sprite;
+		bamboo->setTexture(*bambootex);
+		bamboo->setOrigin(112 / 2, 32 / 2);
+		bamboos.push_back(bamboo);
+	}
+	for (int i = 0; i < 20; i++) {
+		bamboos[i]->setPosition(
+		converter::metersToPixels(platforms[i]->GetPosition().x),
+		converter::metersToPixels(platforms[i]->GetPosition().y));
+	}
 
 	player->checkpoint = platforms[0];
 	contactListener = new MyContactListener(player, platforms, ground, window);

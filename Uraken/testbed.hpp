@@ -33,6 +33,7 @@ private:
 	sf::RenderWindow *window;
 	b2World *world;
 	std::vector <b2Body*> platforms;
+	std::vector<sf::Sprite*> bamboos;
 	sf::View view; //creation of the view to follow the player
 
 
