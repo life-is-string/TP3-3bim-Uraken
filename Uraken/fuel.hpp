@@ -11,8 +11,11 @@
 #include <Box2D/Box2D.h>
 class Fuel {
 private:
+	sf::Clock cooldown;
 	std::vector<sf::IntRect> frames;
 	sf::Texture *texture;
+	sf::SoundBuffer emptbuf;
+	sf::Sound emptying;
 	int param = 0;
 public:
 	sf::Sprite sprite;
@@ -29,17 +32,24 @@ public:
 				}
 			}
 		}
+		emptbuf.loadFromFile("assets/bubble2.wav");
+		emptying.setBuffer(emptbuf);
+		cooldown.restart();
 	}
 	void update(float fuel, sf::Vector2f vpos) {
 		sprite.setPosition(vpos.x - 370, vpos.y - 240);
-		if (fuel == 50) {
-			param = 1;
+		if (fuel >= 25) {
+			param = 0;
 			sprite.setTextureRect(frames[0]);
 		} else {
-			if (fuel <= 50 - 3.5 * param) {
-				if(param < 13){
+			if (fuel <= (25 - 1.78 * param)) {
+				if (param < 13) {
 					param++;
 					sprite.setTextureRect(frames[param]);
+					if (cooldown.getElapsedTime().asSeconds() >= 0.2) {
+						emptying.play();
+						cooldown.restart();
+					}
 				}
 			}
 

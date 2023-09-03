@@ -5,8 +5,6 @@
  *      Author: Grupo 8
  */
 #include "testbed.hpp"
-#include "player.hpp"
-#include <typeinfo>
 
 void Testbed::displayWorld() {
 
@@ -60,7 +58,7 @@ void Testbed::displayWorld() {
 	window->display();
 }
 b2Body* Testbed::createElement(int x, int y, int width, int height,
-		b2BodyType type, sf::Color color = {233,150,122}) {
+		b2BodyType type, sf::Color color = {204, 51, 0}) {
 	//Box2d: creates a polygon object using pixel_to_meters dimensions
 	b2BodyDef bodyDef;
 
@@ -78,7 +76,7 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 1.0;
 	fixtureDef.friction = 0.4;
-	fixtureDef.restitution = 0.3;
+	fixtureDef.restitution = 0.1;
 	fixtureDef.shape = &b2shape;
 
 	b2Body *element = world->CreateBody(&bodyDef);
@@ -166,32 +164,30 @@ Testbed::Testbed() {
 			sf::Color{176,176,176});
 
 	//creates platforms
-	for (int i = 0; i < 20; i++) {
-		Platform platform(i + 1);
-		platforms.push_back(platform);
-	}
-	platforms[0].body = (createElement(130, 510, 112, 31, b2_staticBody)); //1
-	platforms[1].body = (createElement(420, 440, 112, 31, b2_staticBody)); //2
-	platforms[2].body = (createElement(770, 490, 112, 31, b2_staticBody)); //3
-	platforms[3].body = (createElement(1150, 430, 112, 31, b2_staticBody)); //4
-	platforms[4].body = (createElement(1500, 480, 112, 31, b2_staticBody)); //5
-	platforms[5].body = (createElement(1850, 460, 112, 31, b2_staticBody)); //6
-	platforms[6].body = (createElement(2180, 400, 112, 31, b2_staticBody)); //7
-	platforms[7].body = (createElement(2550, 320, 112, 31, b2_staticBody)); //8
-	platforms[8].body = (createElement(2850, 402, 112, 31, b2_staticBody)); //9
-	platforms[9].body = (createElement(3260, 460, 112, 31, b2_staticBody)); //10
-	platforms[10].body = (createElement(3660, 470, 112, 31, b2_staticBody)); //11
-	platforms[11].body = (createElement(4000, 530, 112, 31, b2_staticBody)); //12
-	platforms[12].body = (createElement(4400, 490, 112, 31, b2_staticBody)); //13
-	platforms[13].body = (createElement(4800, 530, 112, 31, b2_staticBody)); //14
-	platforms[14].body = (createElement(5195, 475, 112, 31, b2_staticBody)); //15
-	platforms[15].body = (createElement(5600, 530, 112, 31, b2_staticBody)); //16
-	platforms[16].body = (createElement(5920, 450, 112, 31, b2_staticBody)); //17
-	platforms[17].body = (createElement(6300, 515, 112, 31, b2_staticBody)); //18
-	platforms[18].body = (createElement(6700, 465, 112, 31, b2_staticBody)); //19
-	platforms[19].body = (createElement(7200, 430, 112, 31, b2_staticBody)); //20
 
-	contactListener = new MyContactListener(player->body, ground, window);
+	platforms.push_back(createElement(130, 510, 112, 31, b2_staticBody)); //1
+	platforms.push_back(createElement(420, 440, 112, 31, b2_staticBody)); //2
+	platforms.push_back(createElement(770, 490, 112, 31, b2_staticBody)); //3
+	platforms.push_back(createElement(1150, 430, 112, 31, b2_staticBody)); //4
+	platforms.push_back(createElement(1500, 480, 112, 31, b2_staticBody)); //5
+	platforms.push_back(createElement(1850, 460, 112, 31, b2_staticBody)); //6
+	platforms.push_back(createElement(2180, 400, 112, 31, b2_staticBody)); //7
+	platforms.push_back(createElement(2550, 320, 112, 31, b2_staticBody)); //8
+	platforms.push_back(createElement(2850, 402, 112, 31, b2_staticBody)); //9
+	platforms.push_back(createElement(3260, 460, 112, 31, b2_staticBody)); //10
+	platforms.push_back(createElement(3660, 470, 112, 31, b2_staticBody)); //11
+	platforms.push_back(createElement(4000, 530, 112, 31, b2_staticBody)); //12
+	platforms.push_back(createElement(4400, 490, 112, 31, b2_staticBody)); //13
+	platforms.push_back(createElement(4800, 530, 112, 31, b2_staticBody)); //14
+	platforms.push_back(createElement(5195, 475, 112, 31, b2_staticBody)); //15
+	platforms.push_back(createElement(5600, 530, 112, 31, b2_staticBody)); //16
+	platforms.push_back(createElement(5920, 450, 112, 31, b2_staticBody)); //17
+	platforms.push_back(createElement(6300, 515, 112, 31, b2_staticBody)); //18
+	platforms.push_back(createElement(6700, 465, 112, 31, b2_staticBody)); //19
+	platforms.push_back(createElement(7200, 430, 112, 31, b2_staticBody)); //20
+
+	player->checkpoint = platforms[0];
+	contactListener = new MyContactListener(player, platforms, ground, window);
 	world->SetContactListener(contactListener);
 
 }

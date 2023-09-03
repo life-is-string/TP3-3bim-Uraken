@@ -15,45 +15,47 @@ Player::Player(float &elapsedtime) {
 	frames.push_back(sf::IntRect(0, 68, 56, 64));
 	frames.push_back(sf::IntRect(60, 68, 56, 68));
 	frames.push_back(sf::IntRect(124, 68, 56, 64));
-	jetbuf.loadFromFile("assets/jetting.wav");
-	jetting.setBuffer(jetbuf);
-	jetting.setLoop(true);
-	jetting.play();
+	failbuf.loadFromFile("assets/slam.wav");;
+	fail.setBuffer(failbuf);;
 	tex = new sf::Texture();
 	tex->loadFromFile("assets/nenja.png");
 	isjetting = false;
 	nofuel = false;
-	fuel = 50;
+	fuel = 25;
 	checkpoint = NULL;
 }
 /*bool Player::isPlayerOnPlatform(b2Body *platform) {
-	b2AABB playerAABB, platformAABB; //caixa delimitadora AABB, que pega um canto superior e um canto inferior
-	playerAABB.lowerBound = body->GetFixtureList()->GetAABB(0).lowerBound;
-	playerAABB.upperBound = body->GetFixtureList()->GetAABB(0).upperBound;
-	platformAABB.lowerBound = platform->GetFixtureList()->GetAABB(0).lowerBound;
-	platformAABB.upperBound = platform->GetFixtureList()->GetAABB(0).upperBound;
+ b2AABB playerAABB, platformAABB; //caixa delimitadora AABB, que pega um canto superior e um canto inferior
+ playerAABB.lowerBound = body->GetFixtureList()->GetAABB(0).lowerBound;
+ playerAABB.upperBound = body->GetFixtureList()->GetAABB(0).upperBound;
+ platformAABB.lowerBound = platform->GetFixtureList()->GetAABB(0).lowerBound;
+ platformAABB.upperBound = platform->GetFixtureList()->GetAABB(0).upperBound;
 
-	float playerBottom = playerAABB.upperBound.y;
-	float platformTop = platformAABB.lowerBound.y;
+ float playerBottom = playerAABB.upperBound.y;
+ float platformTop = platformAABB.lowerBound.y;
 
-	//margem para lidar com possíveis problemas
-	float margin = 0.01;
+ //margem para lidar com possíveis problemas
+ float margin = 0.01;
 
-	//ve se o jogador esta perto o suficiente do topo da plataforma
-	return playerBottom >= platformTop - margin
-			&& playerBottom <= platformTop + margin;
-}*/
+ //ve se o jogador esta perto o suficiente do topo da plataforma
+ return playerBottom >= platformTop - margin
+ && playerBottom <= platformTop + margin;
+ }*/
 
 void Player::handleFuel() {
-	if (isjetting && fuel > 0 && *elapsedtime >= 0.3 && *elapsedtime <= 0.6){
+	if (isjetting && fuel > 0 && *elapsedtime >= 0.3 && *elapsedtime <= 0.6) {
 		fuel -= 0.25;
 	}
-	if (fuel == 0)
+	if (fuel == 0){
 		nofuel = true;
+	}else{
+		nofuel = false;
+	}
 }
 void Player::jet(std::string dir) {
-	if (!isjetting)
+	if (!isjetting){
 		isjetting = true;
+	}
 	if (dir == "left") {
 		body->ApplyLinearImpulse(b2Vec2(-2, -2), body->GetWorldCenter(), true);
 		linvel = body->GetLinearVelocity();
@@ -139,16 +141,27 @@ void Player::animate() {
 		sprite->setTextureRect(frames[0]);
 	}
 }
+void Player::respawn() {
+	if (death) {
+		fail.play();
+		b2Vec2 pos = checkpoint->GetPosition();
+		pos.y -= converter::pixelsToMeters(60);
+		body->SetTransform(pos, converter::degToRad(0));
+		fuel = 25;
+		death = false;
+	}else{
+		return;
+	}
+}
 void Player::update() {
 
 	animate();
 	handleFuel();
-	if (!nofuel)
+	if(!nofuel){
 		handleInputs();
-	if(isjetting){
-		jetting.setVolume(100);
 	}else{
-		jetting.setVolume(0);
+		isjetting = false;
 	}
+	respawn();
 }
 

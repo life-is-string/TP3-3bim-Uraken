@@ -11,7 +11,6 @@
 #define max_angvel 2.7
 #include <string>
 #include <cstdio>
-#include "platform.hpp"
 #include <vector>
 #include <iostream>
 #include "b2_sf_converter.hpp"
@@ -22,8 +21,8 @@
 class Player {
 private:
 	sf::Clock clock;
-	sf::SoundBuffer jetbuf;
-	sf::Sound jetting;
+	sf::SoundBuffer failbuf;
+	sf::Sound fail;
 	float ang_vel = 0;
 	bool isjetting, nofuel;
 	void handleFuel();
@@ -32,18 +31,19 @@ private:
 	void animate();
 
 public:
+	bool death = false;
 	float fuel;
 	sf::Texture *tex;
-	b2Body *body;
+	b2Body *body, *checkpoint;
 	float *elapsedtime;
 	b2Vec2 pos;
 	std::vector<sf::IntRect> frames;
-	int checkpoint;
 	b2Vec2 linvel;
 
 	Player(float &elapsedtime);
 	//bool isPlayerOnPlatform(b2Body *platform);
 	void update();
+	void respawn();
 
 };
 

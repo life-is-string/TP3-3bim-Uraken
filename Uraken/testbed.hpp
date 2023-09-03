@@ -9,11 +9,11 @@
 #define TESTBED_HPP_
 #include "player.hpp"
 #include "fuel.hpp"
-#include "platform.hpp"
 #include "fundo.hpp"
 #include "myContactListener.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
+#include <typeinfo>
 
 #include <Box2D/Box2D.h>
 #include "b2_sf_converter.hpp"
@@ -24,7 +24,7 @@ private:
 	MyContactListener *contactListener;
 	sf::Music music;
 	sf::Vector2f vpos;
-	float dt, elapsedtime = 0.3;
+	float dt = 0, elapsedtime = 0.3;
 	sf::Clock clock;
 	Fuel *fueldisplay;
 	Player *player;
@@ -32,7 +32,7 @@ private:
 	b2Body *ground;
 	sf::RenderWindow *window;
 	b2World *world;
-	std::vector <Platform> platforms;
+	std::vector <b2Body*> platforms;
 	sf::View view; //creation of the view to follow the player
 
 
