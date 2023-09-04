@@ -3,4 +3,4 @@ A Box2d and SFML game made with C++
 
 ----------------------------------------------------------------
 **Tela inicial do game**
-<img src="/assets/telaInicial.png">
+<img src="/assets/win.png">
