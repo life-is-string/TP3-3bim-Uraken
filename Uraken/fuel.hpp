@@ -32,7 +32,7 @@ public:
 				}
 			}
 		}
-		emptbuf.loadFromFile("assets/bubble2.wav");
+		emptbuf.loadFromFile("assets/bubble.wav");
 		emptying.setBuffer(emptbuf);
 		cooldown.restart();
 	}

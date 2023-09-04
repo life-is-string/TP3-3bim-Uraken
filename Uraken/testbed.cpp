@@ -9,30 +9,26 @@
 void Testbed::displayWorld() {
 
 	window->clear();
-	world->Step(1.0 / 60, int32(8), int32(3)); //progress the physics simulation
+	//progress the physics simulation
+	if (!freezeAll) {
+		world->Step(1.0 / 60, int32(8), int32(3));
+	}
+	for (auto i : bg->backgrounds) {
+		window->draw(i);
+	}
 
-	window->draw(fundo->background0);
-	window->draw(fundo->background);
-	window->draw(fundo->background2);
-	window->draw(fundo->background3);
-	window->draw(fundo->background4);
-	window->draw(fundo->background5);
-	window->draw(fundo->background6);
-	window->draw(fundo->background7);
-	window->draw(fundo->background8);
-	window->draw(fundo->background9);
-	window->draw(fundo->background10);
-	window->draw(fundo->background11);
-	window->draw(fundo->background12);
-
-	//fundo->draw(window);
-	view.setSize(900, 600); //setting the size of the view 900, 600
+	//View update
+	view.setSize(900, 600);
 	view.zoom(0.85f);
 	vpos.x = player->body->GetPosition().x * 32;
 	vpos.y = player->body->GetPosition().y * 26;
 	view.setCenter(vpos);
 	window->setView(view);
-
+	if(!freezeAll){
+	winscreen.setPosition(vpos.x, vpos.y+winscreen.getGlobalBounds().height);
+	winposy = winscreen.getPosition().y;
+	}
+	//Converts the simulation to the graphical elements
 	for (b2Body *body = world->GetBodyList(); body != nullptr;
 			body = body->GetNext()) { //this for sets as "i" a body from the world, and iterates to the next one until there isn't more bodies
 		if (typeid(body->GetUserData()).name() == "class Sprite") {
@@ -54,8 +50,16 @@ void Testbed::displayWorld() {
 	}
 
 	window->draw(fueldisplay->sprite);
+
 	for (auto i : bamboos) {
 		window->draw(*i);
+	}
+
+	if (freezeAll) {
+		window->draw(winscreen);
+		std::cout<< winposy - winscreen.getGlobalBounds().height << "\n" << winscreen.getPosition().y ;
+		if(winscreen.getPosition().y > winposy - winscreen.getGlobalBounds().height)
+			winscreen.move(0,-1.8);
 	}
 
 	window->display();
@@ -126,69 +130,78 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 }
 
 Testbed::Testbed() {
+
+	//Window setup
 	window = new sf::RenderWindow(sf::VideoMode(900, 600, 32), "Uraken");
 	window->setFramerateLimit(60);
+	sf::Image image;
+	image.loadFromFile("assets/ninja.png");
+	window->setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+
+	//b2World setup
 	b2Vec2 gravity(0.f, 9.f);
+	world = new b2World(gravity);
+
+	//Background music setup
 	music.openFromFile("assets/naruto-blue-bird.wav");
 	music.setLoop(true);
 	music.setVolume(25);
 	music.play();
-	fundo = new Fundo;
-	//Icone da janela.
-	sf::Image image = sf::Image { };
-	image.loadFromFile("assets/ninja.png");
-	window->setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
-	world = new b2World(gravity);
-
+	//Game assets setup
+	sf::Texture *winTex = new sf::Texture;
+	winTex->loadFromFile("assets/win.png");
+	winscreen.setTexture(*winTex);
+	winscreen.setOrigin(winscreen.getGlobalBounds().width/2, winscreen.getGlobalBounds().height/2);
+	winscreen.setScale(0.8, 0.8);
+	bg = new Background;
 	player = new Player(elapsedtime);
 	fueldisplay = new Fuel;
-	player->body = createElement(130, 150, 52, 64, b2_dynamicBody, player->tex,
+	player->body = createElement(130, 452, 52, 64, b2_dynamicBody, player->tex,
 			player->frames[0]);
 
-	//Paredes do jogo (para definir os limites de voo)
+	//Walls (flight limits)
+
 	//ground
 	ground = createElement(200, 660, 16000, 170, b2_staticBody,
-			sf::Color::Transparent); //creates the ground
+			sf::Color::Transparent);
 
+	//lake
 	createElement(200, 692, 16000, 170, b2_staticBody,
 			sf::Color { 159, 159, 159 });
 
 	//left wall
 	createElement(-320, 660, 16, 1800, b2_staticBody, sf::Color::Transparent);
 
-	//right wall
-	createElement(7600, 660, 16, 1800, b2_staticBody, sf::Color::Transparent);
-
-	//up wall
+	//sky
 	createElement(-985.8, -530, 20000, 1000, b2_staticBody, sf::Color { 176,
 			176, 176 });
 
-	//creates platforms
+	//Platforms setup
 
 	platforms.push_back(createElement(130, 510, 112, 31, b2_staticBody)); //1
-	platforms.push_back(createElement(420, 440, 112, 31, b2_staticBody)); //2
-	platforms.push_back(createElement(770, 490, 112, 31, b2_staticBody)); //3
-	platforms.push_back(createElement(1150, 430, 112, 31, b2_staticBody)); //4
-	platforms.push_back(createElement(1500, 480, 112, 31, b2_staticBody)); //5
-	platforms.push_back(createElement(1850, 460, 112, 31, b2_staticBody)); //6
-	platforms.push_back(createElement(2180, 400, 112, 31, b2_staticBody)); //7
-	platforms.push_back(createElement(2550, 320, 112, 31, b2_staticBody)); //8
-	platforms.push_back(createElement(2850, 402, 112, 31, b2_staticBody)); //9
-	platforms.push_back(createElement(3260, 460, 112, 31, b2_staticBody)); //10
-	platforms.push_back(createElement(3660, 470, 112, 31, b2_staticBody)); //11
-	platforms.push_back(createElement(4000, 530, 112, 31, b2_staticBody)); //12
-	platforms.push_back(createElement(4400, 490, 112, 31, b2_staticBody)); //13
-	platforms.push_back(createElement(4800, 530, 112, 31, b2_staticBody)); //14
-	platforms.push_back(createElement(5195, 475, 112, 31, b2_staticBody)); //15
-	platforms.push_back(createElement(5600, 530, 112, 31, b2_staticBody)); //16
-	platforms.push_back(createElement(5920, 450, 112, 31, b2_staticBody)); //17
-	platforms.push_back(createElement(6300, 515, 112, 31, b2_staticBody)); //18
-	platforms.push_back(createElement(6700, 465, 112, 31, b2_staticBody)); //19
-	platforms.push_back(createElement(7200, 430, 112, 31, b2_staticBody)); //20
+	platforms.push_back(createElement(420, 100, 112, 31, b2_staticBody)); //2
+	platforms.push_back(createElement(850, 499, 112, 31, b2_staticBody)); //3
+	platforms.push_back(createElement(1490, 110, 112, 31, b2_staticBody));//4
+	platforms.push_back(createElement(1690, 350, 112, 31, b2_staticBody)); //5
+	platforms.push_back(createElement(2280, 150, 112, 31, b2_staticBody)); //6
+	platforms.push_back(createElement(2559, 350, 112, 31, b2_staticBody)); //7
+	platforms.push_back(createElement(3090, 100, 112, 31, b2_staticBody)); //8
+	platforms.push_back(createElement(3560, 402, 112, 31, b2_staticBody)); //9
+	platforms.push_back(createElement(3860, 205, 112, 31, b2_staticBody)); //10
+	platforms.push_back(createElement(4200, 510, 112, 31, b2_staticBody)); //11
+	platforms.push_back(createElement(4650, 210, 112, 31, b2_staticBody)); //12
+	platforms.push_back(createElement(4950, 420, 112, 31, b2_staticBody)); //13
+	platforms.push_back(createElement(5365, 104, 112, 31, b2_staticBody)); //14
+	platforms.push_back(createElement(5520, 375, 112, 31, b2_staticBody)); //15
+	platforms.push_back(createElement(5920, 230, 112, 31, b2_staticBody)); //16
+	platforms.push_back(createElement(6250, 470, 112, 31, b2_staticBody)); //17
+	platforms.push_back(createElement(6530, 105, 112, 31, b2_staticBody)); //18
+	platforms.push_back(createElement(6850, 465, 112, 31, b2_staticBody)); //19
+	platforms.push_back(createElement(7300, 120, 112, 31, b2_staticBody)); //20
 
-	sf::Texture *bambootex;
-	bambootex = new sf::Texture;
+	//Bamboo platforms sprites setup
+	sf::Texture *bambootex = new sf::Texture;
 	bambootex->loadFromFile("assets/bamboo.png");
 	for (int i = 0; i < 20; i++) {
 		sf::Sprite *bamboo;
@@ -199,12 +212,14 @@ Testbed::Testbed() {
 	}
 	for (int i = 0; i < 20; i++) {
 		bamboos[i]->setPosition(
-		converter::metersToPixels(platforms[i]->GetPosition().x),
-		converter::metersToPixels(platforms[i]->GetPosition().y));
+				converter::metersToPixels(platforms[i]->GetPosition().x),
+				converter::metersToPixels(platforms[i]->GetPosition().y));
 	}
 
+	//Checkpoint and collision setup
 	player->checkpoint = platforms[0];
-	contactListener = new MyContactListener(player, platforms, ground, window);
+	contactListener = new MyContactListener(player, platforms, ground, window,
+			&freezeAll, &music);
 	world->SetContactListener(contactListener);
 
 }
@@ -219,13 +234,10 @@ void Testbed::Run() {
 			if (event.type == sf::Event::Closed)
 				window->close();
 		}
-		//verifica se a "caixa" do player esta em contato com a plataforma do chão
-		/*if (player->isPlayerOnPlatform(ground)) {
-		 window.close(); // Fecha o jogo se o jogador cair no chão
-		 }*/
-
-		player->update();
-		fueldisplay->update(player->fuel, vpos);
+		if (!freezeAll) {
+			player->update();
+			fueldisplay->update(player->fuel, vpos);
+		}
 		displayWorld();
 	}
 

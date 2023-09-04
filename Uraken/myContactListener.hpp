@@ -17,15 +17,17 @@
 class MyContactListener: public b2ContactListener {
 private:
 	sf::Sound sucess;
+	sf::Music *music;
 	b2Body *ground;
 	sf::RenderWindow *window;
 	Player *player;
+	bool* freezeAll;
 	sf::SoundBuffer sucessbuf;
 	std::vector<b2Body*> platforms;
 public:
 	MyContactListener(Player* player, std::vector<b2Body*> platforms, b2Body* ground,
-			sf::RenderWindow *window) :
-			player(player), platforms(platforms), window(window), ground(ground) {
+			sf::RenderWindow *window, bool* freezeAll, sf::Music *music) :
+			player(player), platforms(platforms), window(window), ground(ground), freezeAll(freezeAll), music(music) {
 		sucessbuf.loadFromFile("assets/sucess.wav");
 		sucess.setBuffer(sucessbuf);
 
@@ -64,6 +66,13 @@ public:
 						sucess.play();
 						player->checkpoint = i;
 						player->fuel = 25;
+						if(i == platforms[19]){ //last platforms, win the game
+							//send broadcast to the testbed to freeze all and to show win screen
+							*freezeAll = true;
+							music->stop();
+							music->openFromFile("assets/naruto-wind.wav");
+							music->play();
+						}
 					}
 				}
 			}
