@@ -1,12 +1,15 @@
 /*
- * testbed.hpp
+ * menu.hpp
  *
- *  Created on: 18 de ago. de 2023
- *      Author: Grupo 8
+ *  Created on: 9 de jun. de 2023
+ *      Author: hayde
  */
-
-#ifndef TESTBED_HPP_
-#define TESTBED_HPP_
+#pragma once
+#ifndef STATES_MENUSTATE_HPP_
+#define STATES_MENUSTATE_HPP_
+#include "gamedata.hpp"
+#include "State.hpp"
+#include "stdafx.hpp"
 #include "player.hpp"
 #include "fuel.hpp"
 #include "myContactListener.hpp"
@@ -19,8 +22,15 @@
 #include <iostream>
 #include "background.hpp"
 
-class Testbed {
+class GameState: public State {
+public:
+	GameState(GameDataRef data);
+	void init();
+	void update();
+	void draw();
+
 private:
+	GameDataRef data;
 	MyContactListener *contactListener;
 	sf::Music music;
 	sf::Vector2f vpos;
@@ -31,23 +41,16 @@ private:
 	Player *player;
 	Background *bg;
 	b2Body *ground;
-	sf::RenderWindow *window;
 	b2World *world;
-	std::vector <b2Body*> platforms;
+	std::vector<b2Body*> platforms;
 	std::vector<sf::Sprite*> bamboos;
+	b2Body* createElement(int x, int y, int width, int height, b2BodyType type,
+			sf::Color color);
+	b2Body* createElement(int x, int y, int width, int height, b2BodyType type,
+			sf::Texture *tex, sf::IntRect frame);
 	sf::View view; //creation of the view to follow the player
 	bool freezeAll = false; //stops the simulation, game end
-	void displayWorld();
 
-public:
-	b2Body* createElement(int x, int y, int width, int height,
-			b2BodyType type, sf::Color color);
-	b2Body* createElement(int x, int y, int width, int height,
-				b2BodyType type, sf::Texture *tex, sf::IntRect frame);
-	Testbed();
-	void Run();
 };
 
-
-
-#endif /* TESTBED_HPP_ */
+#endif /* STATES_MENUSTATE_HPP_ */

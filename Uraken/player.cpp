@@ -143,6 +143,8 @@ void Player::animate() {
 }
 void Player::respawn() {
 	if (death) {
+		body->SetLinearVelocity(b2Vec2(0,0));
+		body->SetAngularVelocity(0);
 		fail.play();
 		b2Vec2 pos = checkpoint->GetPosition();
 		pos.y -= converter::pixelsToMeters(60);

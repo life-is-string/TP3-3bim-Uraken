@@ -4,17 +4,17 @@
  *  Created on: 18 de ago. de 2023
  *      Author: Grupo 8
  */
-#include "testbed.hpp"
+#include "gamestate.hpp"
 
-void Testbed::displayWorld() {
+void GameState::draw() {
 
-	window->clear();
+	data->window.clear();
 	//progress the physics simulation
 	if (!freezeAll) {
 		world->Step(1.0 / 60, int32(8), int32(3));
 	}
 	for (auto i : bg->backgrounds) {
-		window->draw(i);
+		data->window.draw(i);
 	}
 
 	//View update
@@ -23,10 +23,11 @@ void Testbed::displayWorld() {
 	vpos.x = player->body->GetPosition().x * 32;
 	vpos.y = player->body->GetPosition().y * 26;
 	view.setCenter(vpos);
-	window->setView(view);
-	if(!freezeAll){
-	winscreen.setPosition(vpos.x, vpos.y+winscreen.getGlobalBounds().height);
-	winposy = winscreen.getPosition().y;
+	data->window.setView(view);
+	if (!freezeAll) {
+		winscreen.setPosition(vpos.x,
+				vpos.y + winscreen.getGlobalBounds().height);
+		winposy = winscreen.getPosition().y;
 	}
 	//Converts the simulation to the graphical elements
 	for (b2Body *body = world->GetBodyList(); body != nullptr;
@@ -37,7 +38,7 @@ void Testbed::displayWorld() {
 					converter::metersToPixels(body->GetPosition().x),
 					converter::metersToPixels(body->GetPosition().y));
 			sprite->setRotation(converter::radToDeg<double>(body->GetAngle()));
-			window->draw(*sprite);
+			data->window.draw(*sprite);
 
 		} else {
 			sf::Shape *shape = static_cast<sf::Shape*>(body->GetUserData()); //grabs the graphical representation pointer
@@ -45,26 +46,28 @@ void Testbed::displayWorld() {
 			shape->setPosition(converter::metersToPixels(body->GetPosition().x),
 					converter::metersToPixels(body->GetPosition().y));
 			shape->setRotation(converter::radToDeg<double>(body->GetAngle()));
-			window->draw(*shape);
+			data->window.draw(*shape);
 		}
 	}
 
-	window->draw(fueldisplay->sprite);
+	data->window.draw(fueldisplay->sprite);
 
 	for (auto i : bamboos) {
-		window->draw(*i);
+		data->window.draw(*i);
 	}
 
 	if (freezeAll) {
-		window->draw(winscreen);
-		std::cout<< winposy - winscreen.getGlobalBounds().height << "\n" << winscreen.getPosition().y ;
-		if(winscreen.getPosition().y > winposy - winscreen.getGlobalBounds().height)
-			winscreen.move(0,-1.8);
+		data->window.draw(winscreen);
+		std::cout << winposy - winscreen.getGlobalBounds().height << "\n"
+				<< winscreen.getPosition().y;
+		if (winscreen.getPosition().y
+				> winposy - winscreen.getGlobalBounds().height)
+			winscreen.move(0, -1.8);
 	}
 
-	window->display();
+	data->window.display();
 }
-b2Body* Testbed::createElement(int x, int y, int width, int height,
+b2Body* GameState::createElement(int x, int y, int width, int height,
 		b2BodyType type, sf::Color color = sf::Color::Transparent) {
 	//Box2d: creates a polygon object using pixel_to_meters dimensions
 	b2BodyDef bodyDef;
@@ -99,7 +102,7 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 	//pointer for graphical representation
 	return element;
 }
-b2Body* Testbed::createElement(int x, int y, int width, int height,
+b2Body* GameState::createElement(int x, int y, int width, int height,
 		b2BodyType type, sf::Texture *tex, sf::IntRect frame) {
 	//Box2d: creates a polygon object using pixel_to_meters dimensions
 	b2BodyDef bodyDef;
@@ -129,14 +132,7 @@ b2Body* Testbed::createElement(int x, int y, int width, int height,
 	return element;
 }
 
-Testbed::Testbed() {
-
-	//Window setup
-	window = new sf::RenderWindow(sf::VideoMode(900, 600, 32), "Uraken");
-	window->setFramerateLimit(60);
-	sf::Image image;
-	image.loadFromFile("assets/ninja.png");
-	window->setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+void GameState::init() {
 
 	//b2World setup
 	b2Vec2 gravity(0.f, 9.f);
@@ -152,7 +148,8 @@ Testbed::Testbed() {
 	sf::Texture *winTex = new sf::Texture;
 	winTex->loadFromFile("assets/win.png");
 	winscreen.setTexture(*winTex);
-	winscreen.setOrigin(winscreen.getGlobalBounds().width/2, winscreen.getGlobalBounds().height/2);
+	winscreen.setOrigin(winscreen.getGlobalBounds().width / 2,
+			winscreen.getGlobalBounds().height / 2);
 	winscreen.setScale(0.8, 0.8);
 	bg = new Background;
 	player = new Player(elapsedtime);
@@ -182,7 +179,7 @@ Testbed::Testbed() {
 	platforms.push_back(createElement(130, 510, 112, 31, b2_staticBody)); //1
 	platforms.push_back(createElement(420, 100, 112, 31, b2_staticBody)); //2
 	platforms.push_back(createElement(850, 499, 112, 31, b2_staticBody)); //3
-	platforms.push_back(createElement(1490, 110, 112, 31, b2_staticBody));//4
+	platforms.push_back(createElement(1490, 110, 112, 31, b2_staticBody)); //4
 	platforms.push_back(createElement(1690, 350, 112, 31, b2_staticBody)); //5
 	platforms.push_back(createElement(2280, 150, 112, 31, b2_staticBody)); //6
 	platforms.push_back(createElement(2559, 350, 112, 31, b2_staticBody)); //7
@@ -218,28 +215,28 @@ Testbed::Testbed() {
 
 	//Checkpoint and collision setup
 	player->checkpoint = platforms[0];
-	contactListener = new MyContactListener(player, platforms, ground, window,
-			&freezeAll, &music);
+	contactListener = new MyContactListener(player, platforms, ground,
+			&data->window, &freezeAll, &music);
 	world->SetContactListener(contactListener);
-
 }
-void Testbed::Run() {
-	while (window->isOpen()) {
-		dt = clock.restart().asSeconds();
-		elapsedtime += dt;
-		if (elapsedtime >= 0.9)
-			elapsedtime = 0.3;
-		sf::Event event;
-		while (window->pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				window->close();
-		}
-		if (!freezeAll) {
-			player->update();
-			fueldisplay->update(player->fuel, vpos);
-		}
-		displayWorld();
-	}
 
+GameState::GameState(GameDataRef data) {
+	this->data = data;
+}
+
+void GameState::update() {
+	dt = clock.restart().asSeconds();
+	elapsedtime += dt;
+	if (elapsedtime >= 0.9)
+		elapsedtime = 0.3;
+	sf::Event event;
+	while (data->window.pollEvent(event)) {
+		if (event.type == sf::Event::Closed)
+			data->window.close();
+	}
+	if (!freezeAll) {
+		player->update();
+		fueldisplay->update(player->fuel, vpos);
+	}
 }
 
