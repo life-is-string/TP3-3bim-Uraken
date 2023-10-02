@@ -29,6 +29,7 @@ private:
 	void jet(std::string dir);
 	void handleInputs();
 	void animate();
+	void respawn();
 
 public:
 	bool death = false;
@@ -42,7 +43,6 @@ public:
 
 	Player(float &elapsedtime);
 	void update();
-	void respawn();
 
 };
 
