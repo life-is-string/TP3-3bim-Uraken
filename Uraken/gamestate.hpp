@@ -49,6 +49,7 @@ private:
 	b2Body* createElement(int x, int y, int width, int height, b2BodyType type,
 			sf::Texture *tex, sf::IntRect frame);
 	sf::View view; //creation of the view to follow the player
+	sf::View minimap; //creation of the view for the minimap
 	bool freezeAll = false; //stops the simulation, game end
 
 };

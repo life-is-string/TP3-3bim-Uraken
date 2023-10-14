@@ -17,6 +17,7 @@ void GameState::draw() {
 		data->window.draw(i);
 	}
 
+
 	//View update
 	view.setSize(900, 600);
 	view.zoom(0.85f);
@@ -24,6 +25,21 @@ void GameState::draw() {
 	vpos.y = player->body->GetPosition().y * 26;
 	view.setCenter(vpos);
 	data->window.setView(view);
+
+
+	sf::Texture fundoBranco;
+	fundoBranco.loadFromFile("assets/fundoMinimapa2.png");
+	sf::Sprite fundoBrancoo;
+	fundoBrancoo.setTexture(fundoBranco);
+	//fundoBrancoo.setColor( { 255, 255, 255, 190 });
+	fundoBrancoo.setPosition(vpos.x - -138, vpos.y - 262);
+	fundoBrancoo.setScale(0.5, 0.5);
+	data->window.draw(fundoBrancoo);
+
+	for (auto i : bg->backgrounds) {
+		data->window.draw(i);
+	}
+
 	if (!freezeAll) {
 		winscreen.setPosition(vpos.x,
 				vpos.y + winscreen.getGlobalBounds().height);
@@ -64,7 +80,57 @@ void GameState::draw() {
 				> winposy - winscreen.getGlobalBounds().height)
 			winscreen.move(0, -1.8);
 	}
+	//view do minimapa
+	minimap.setSize(500, 390);
+	minimap.zoom(1.6f);
+	minimap.setViewport(sf::FloatRect(0.68, 0, 0.32, 0.36));
+	minimap.setCenter(vpos);
+	data->window.setView(minimap);
 
+	for (auto i : bg->backgrounds) {
+		data->window.draw(i);
+	}
+
+	if (!freezeAll) {
+		winscreen.setPosition(vpos.x,
+				vpos.y + winscreen.getGlobalBounds().height);
+		winposy = winscreen.getPosition().y;
+	}
+	//Converts the simulation to the graphical elements
+	for (b2Body *body = world->GetBodyList(); body != nullptr;
+			body = body->GetNext()) { //this for sets as "i" a body from the world, and iterates to the next one until there isn't more bodies
+		if (typeid(body->GetUserData()).name() == "class Sprite") {
+			sf::Sprite *sprite = static_cast<sf::Sprite*>(body->GetUserData());
+			sprite->setPosition(
+					converter::metersToPixels(body->GetPosition().x),
+					converter::metersToPixels(body->GetPosition().y));
+			sprite->setRotation(converter::radToDeg<double>(body->GetAngle()));
+			data->window.draw(*sprite);
+
+		} else {
+			sf::Shape *shape = static_cast<sf::Shape*>(body->GetUserData()); //grabs the graphical representation pointer
+			//Converts the physics simulation data to graphics
+			shape->setPosition(converter::metersToPixels(body->GetPosition().x),
+					converter::metersToPixels(body->GetPosition().y));
+			shape->setRotation(converter::radToDeg<double>(body->GetAngle()));
+			data->window.draw(*shape);
+		}
+	}
+
+	data->window.draw(fueldisplay->sprite);
+
+	for (auto i : bamboos) {
+		data->window.draw(*i);
+	}
+
+	if (freezeAll) {
+		data->window.draw(winscreen);
+		std::cout << winposy - winscreen.getGlobalBounds().height << "\n"
+				<< winscreen.getPosition().y;
+		if (winscreen.getPosition().y
+				> winposy - winscreen.getGlobalBounds().height)
+			winscreen.move(0, -1.8);
+	}
 	data->window.display();
 }
 b2Body* GameState::createElement(int x, int y, int width, int height,
@@ -177,9 +243,9 @@ void GameState::init() {
 	//Platforms setup
 
 	platforms.push_back(createElement(130, 510, 112, 31, b2_staticBody)); //1
-	platforms.push_back(createElement(420, 100, 112, 31, b2_staticBody)); //2
+	platforms.push_back(createElement(420, 250, 112, 31, b2_staticBody)); //2
 	platforms.push_back(createElement(850, 499, 112, 31, b2_staticBody)); //3
-	platforms.push_back(createElement(1490, 110, 112, 31, b2_staticBody)); //4
+	platforms.push_back(createElement(1290, 110, 112, 31, b2_staticBody)); //4
 	platforms.push_back(createElement(1690, 350, 112, 31, b2_staticBody)); //5
 	platforms.push_back(createElement(2280, 150, 112, 31, b2_staticBody)); //6
 	platforms.push_back(createElement(2559, 350, 112, 31, b2_staticBody)); //7
