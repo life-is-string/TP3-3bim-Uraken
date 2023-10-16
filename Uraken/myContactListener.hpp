@@ -12,7 +12,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Player.hpp"
-#include <iostream>
+
 
 class MyContactListener: public b2ContactListener {
 private:
@@ -59,9 +59,13 @@ public:
 			if ((bodyA == player->body && bodyB == i)
 					|| (bodyA == i && bodyB == player->body)) {
 				if (normal == b2Vec2(0, 1) || normal == b2Vec2(0, -1)) { //detects top collision
+
 					player->linvel = player->body->GetLinearVelocity();
+
 					if (player->linvel.y > 6) { //dies
+
 						player->death = true;
+
 					}else if(player->checkpoint != i){ //new checkpoint
 						sucess.play();
 						player->checkpoint = i;

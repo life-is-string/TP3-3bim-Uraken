@@ -57,6 +57,8 @@ void Player::jet(std::string dir) {
 		isjetting = true;
 	}
 	if (dir == "left") {
+		sf::Sprite *sprite = static_cast<sf::Sprite*>(body->GetUserData());
+		sprite->setTextureRect(frames[1]);
 		body->ApplyLinearImpulse(b2Vec2(-2, -2), body->GetWorldCenter(), true);
 		linvel = body->GetLinearVelocity();
 		if (linvel.x < -7.5) {
@@ -76,6 +78,8 @@ void Player::jet(std::string dir) {
 		body->SetAngularVelocity(ang_vel);
 
 	} else if (dir == "right") {
+		sf::Sprite *sprite = static_cast<sf::Sprite*>(body->GetUserData());
+		sprite->setTextureRect(frames[0]);
 		body->ApplyLinearImpulse(b2Vec2(2, -2), body->GetWorldCenter(), true);
 		linvel = body->GetLinearVelocity();
 		if (linvel.x > 7.5) {
@@ -115,9 +119,12 @@ void Player::handleInputs() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)
 			&& sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
 		linvel = body->GetLinearVelocity();
+		sf::Sprite *sprite = static_cast<sf::Sprite*>(body->GetUserData());
+		sprite->setTextureRect(frames[3]);
 		if (linvel.y < -7.5) {
 			linvel.y = -7.5;
 		}
+
 		body->SetLinearVelocity(linvel);
 	}
 	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)
@@ -143,6 +150,10 @@ void Player::animate() {
 }
 void Player::respawn() {
 	if (death) {
+		//dismember and explode player body:
+		//create 4 child bodies from the original sprite
+		//apply box2d explosion simulation
+		//measure velocity or explosion time for posterior respawning
 		body->SetLinearVelocity(b2Vec2(0,0));
 		body->SetAngularVelocity(0);
 		fail.play();

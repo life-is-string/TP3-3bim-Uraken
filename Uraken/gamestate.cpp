@@ -74,12 +74,11 @@ void GameState::draw() {
 
 	if (freezeAll) {
 		data->window.draw(winscreen);
-		std::cout << winposy - winscreen.getGlobalBounds().height << "\n"
-				<< winscreen.getPosition().y;
 		if (winscreen.getPosition().y
 				> winposy - winscreen.getGlobalBounds().height)
 			winscreen.move(0, -1.8);
 	}
+
 	//view do minimapa
 	minimap.setSize(500, 390);
 	minimap.zoom(1.6f);
@@ -123,14 +122,14 @@ void GameState::draw() {
 		data->window.draw(*i);
 	}
 
+	data->window.setView(view);
 	if (freezeAll) {
-		data->window.draw(winscreen);
-		std::cout << winposy - winscreen.getGlobalBounds().height << "\n"
-				<< winscreen.getPosition().y;
-		if (winscreen.getPosition().y
-				> winposy - winscreen.getGlobalBounds().height)
-			winscreen.move(0, -1.8);
-	}
+			data->window.draw(winscreen);
+			if (winscreen.getPosition().y
+					> winposy - winscreen.getGlobalBounds().height)
+				winscreen.move(0, -1.8);
+		}
+
 	data->window.display();
 }
 b2Body* GameState::createElement(int x, int y, int width, int height,
