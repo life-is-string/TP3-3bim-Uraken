@@ -20,9 +20,9 @@
 
 class Player {
 private:
-	sf::Clock clock;
 	sf::SoundBuffer failbuf;
 	sf::Sound fail;
+	b2World *world;
 	float ang_vel = 0;
 	bool isjetting, nofuel;
 	void handleFuel();
@@ -30,18 +30,20 @@ private:
 	void handleInputs();
 	void animate();
 	void respawn();
+	void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
 
 public:
-	bool death = false;
+	bool death = false, res = false;
 	float fuel;
 	sf::Texture *tex;
 	b2Body *body, *checkpoint;
 	float *elapsedtime;
 	b2Vec2 pos;
+	std::vector<b2Body*> fleshparts;
 	std::vector<sf::IntRect> frames;
 	b2Vec2 linvel;
 
-	Player(float &elapsedtime);
+	Player(float &elapsedtime, b2World *world);
 	void update();
 
 };

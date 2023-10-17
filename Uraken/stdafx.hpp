@@ -22,9 +22,7 @@
 #include <string>
 #include <sstream>
 #include <memory>
-enum directions{
-	south, southwest, west, northwest, north, northeast, east, southeast
-};
+
 
 
 

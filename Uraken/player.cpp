@@ -6,8 +6,23 @@
  */
 #include "player.hpp"
 
-Player::Player(float &elapsedtime) {
+void Player::applyBlastImpulse(b2Body *body, b2Vec2 blastCenter,
+		b2Vec2 applyPoint, float blastPower) {
+	b2Vec2 blastDir = applyPoint - blastCenter;
+	float distance = blastDir.Normalize();
+	//ignore bodies exactly at the blast point - blast direction is undefined
+	if (distance == 0)
+		return;
+	float invDistance = 1 / distance;
+	float impulseMag = blastPower * invDistance * invDistance;
+	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
+}
+
+Player::Player(float &elapsedtime, b2World *world) : world(world) {
 	body = NULL;
+	for (auto i : fleshparts) {
+		i = NULL;
+	}
 	this->elapsedtime = &elapsedtime;
 	frames.push_back(sf::IntRect(4, 0, 56, 64));
 	frames.push_back(sf::IntRect(60, 0, 56, 64));
@@ -15,8 +30,8 @@ Player::Player(float &elapsedtime) {
 	frames.push_back(sf::IntRect(0, 68, 56, 64));
 	frames.push_back(sf::IntRect(60, 68, 56, 68));
 	frames.push_back(sf::IntRect(124, 68, 56, 64));
-	failbuf.loadFromFile("assets/slam.wav");;
-	fail.setBuffer(failbuf);;
+	failbuf.loadFromFile("assets/slam.wav");
+	fail.setBuffer(failbuf);
 	tex = new sf::Texture();
 	tex->loadFromFile("assets/nenja.png");
 	isjetting = false;
@@ -24,36 +39,19 @@ Player::Player(float &elapsedtime) {
 	fuel = 25;
 	checkpoint = NULL;
 }
-/*bool Player::isPlayerOnPlatform(b2Body *platform) {
- b2AABB playerAABB, platformAABB; //caixa delimitadora AABB, que pega um canto superior e um canto inferior
- playerAABB.lowerBound = body->GetFixtureList()->GetAABB(0).lowerBound;
- playerAABB.upperBound = body->GetFixtureList()->GetAABB(0).upperBound;
- platformAABB.lowerBound = platform->GetFixtureList()->GetAABB(0).lowerBound;
- platformAABB.upperBound = platform->GetFixtureList()->GetAABB(0).upperBound;
-
- float playerBottom = playerAABB.upperBound.y;
- float platformTop = platformAABB.lowerBound.y;
-
- //margem para lidar com possíveis problemas
- float margin = 0.01;
-
- //ve se o jogador esta perto o suficiente do topo da plataforma
- return playerBottom >= platformTop - margin
- && playerBottom <= platformTop + margin;
- }*/
 
 void Player::handleFuel() {
 	if (isjetting && fuel > 0 && *elapsedtime >= 0.3 && *elapsedtime <= 0.6) {
 		fuel -= 0.25;
 	}
-	if (fuel == 0){
+	if (fuel == 0) {
 		nofuel = true;
-	}else{
+	} else {
 		nofuel = false;
 	}
 }
 void Player::jet(std::string dir) {
-	if (!isjetting){
+	if (!isjetting) {
 		isjetting = true;
 	}
 	if (dir == "left") {
@@ -150,29 +148,24 @@ void Player::animate() {
 }
 void Player::respawn() {
 	if (death) {
-		//dismember and explode player body:
-		//create 4 child bodies from the original sprite
-		//apply box2d explosion simulation
-		//measure velocity or explosion time for posterior respawning
-		body->SetLinearVelocity(b2Vec2(0,0));
-		body->SetAngularVelocity(0);
+		for (auto i : fleshparts) {
+			applyBlastImpulse(i, body->GetPosition(), i->GetWorldCenter(),
+					15.f);
+		}
+		res = true;
+		world->DestroyBody(body);
 		fail.play();
-		b2Vec2 pos = checkpoint->GetPosition();
-		pos.y -= converter::pixelsToMeters(60);
-		body->SetTransform(pos, converter::degToRad(0));
-		fuel = 25;
 		death = false;
-	}else{
+	} else {
 		return;
 	}
 }
 void Player::update() {
-
 	animate();
 	handleFuel();
-	if(!nofuel){
+	if (!nofuel) {
 		handleInputs();
-	}else{
+	} else {
 		isjetting = false;
 	}
 	respawn();

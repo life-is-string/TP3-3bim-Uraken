@@ -34,7 +34,8 @@ private:
 	MyContactListener *contactListener;
 	sf::Music music;
 	sf::Vector2f vpos;
-	float dt = 0, elapsedtime = 0.3, winposy = 0;
+	int i = 0;
+	float dt = 0, elapsedtime = 0.3, elapsedtime_exp, winposy = 0, smokeclock = 0;
 	sf::Clock clock;
 	sf::Sprite winscreen;
 	Fuel *fueldisplay;
@@ -42,7 +43,9 @@ private:
 	Background *bg;
 	b2Body *ground;
 	b2World *world;
+	sf::Sprite* smoke;
 	std::vector<b2Body*> platforms;
+	std::vector<sf::Texture> fumacinha;
 	std::vector<sf::Sprite*> bamboos;
 	b2Body* createElement(int x, int y, int width, int height, b2BodyType type,
 			sf::Color color);
@@ -50,7 +53,7 @@ private:
 			sf::Texture *tex, sf::IntRect frame);
 	sf::View view; //creation of the view to follow the player
 	sf::View minimap; //creation of the view for the minimap
-	bool freezeAll = false; //stops the simulation, game end
+	bool freezeAll = false, smokeanim = false; //stops the simulation, game end
 
 };
 

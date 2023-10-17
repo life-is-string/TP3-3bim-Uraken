@@ -11,12 +11,15 @@ SplashScreen::SplashScreen(GameDataRef data) :
 }
 ;
 void SplashScreen::init() {
+	barkbuf.loadFromFile("assets/bark.wav");
+	bark.setBuffer(barkbuf);
 	tex.loadFromFile("assets/devdogs_logo.png");
 	logo.setTexture(tex);
 	logo.setOrigin(logo.getGlobalBounds().width/2, logo.getLocalBounds().height/2);
 	logo.setPosition(ww / 2, wh / 2);
 	logo.setScale(0.9,0.9);
 	logo.setColor(sf::Color{255,255,255,a});
+	bark.play();
 }
 void SplashScreen::update() {
 	if(!fade){
@@ -28,7 +31,7 @@ void SplashScreen::update() {
 		}
 		logo.setColor(sf::Color{255,255,255,a});
 	}
-	if (clock.getElapsedTime().asSeconds() > 4.4) {
+	if (clock.getElapsedTime().asSeconds() > 2.3) {
 		fade = true;
 		a-=5;
 		if(a < 0){

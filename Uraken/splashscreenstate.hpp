@@ -23,6 +23,8 @@ public:
 private:
 	GameDataRef data;
 	sf::Clock clock;
+	sf::SoundBuffer barkbuf;
+	sf::Sound bark;
 	sf::Texture tex;
 	sf::Sprite logo;
 	float a = 0;

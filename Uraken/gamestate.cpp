@@ -5,6 +5,7 @@
  *      Author: Grupo 8
  */
 #include "gamestate.hpp"
+#include "explosion.hpp"
 
 void GameState::draw() {
 
@@ -17,7 +18,6 @@ void GameState::draw() {
 		data->window.draw(i);
 	}
 
-
 	//View update
 	view.setSize(900, 600);
 	view.zoom(0.85f);
@@ -25,7 +25,6 @@ void GameState::draw() {
 	vpos.y = player->body->GetPosition().y * 26;
 	view.setCenter(vpos);
 	data->window.setView(view);
-
 
 	sf::Texture fundoBranco;
 	fundoBranco.loadFromFile("assets/fundoMinimapa2.png");
@@ -45,6 +44,38 @@ void GameState::draw() {
 				vpos.y + winscreen.getGlobalBounds().height);
 		winposy = winscreen.getPosition().y;
 	}
+
+	if (player->fuel != 0 && !player->death) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+				&& sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			smokeanim = true;
+			smoke->setPosition(
+					converter::metersToPixels(player->body->GetPosition().x)
+							- 44,
+					converter::metersToPixels(player->body->GetPosition().y)-16);
+			data->window.draw(*smoke);
+
+		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+				&& !sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			smokeanim = true;
+			smoke->setPosition(
+					converter::metersToPixels(player->body->GetPosition().x)
+							- 64,
+					converter::metersToPixels(player->body->GetPosition().y)
+							- 23);
+			data->window.draw(*smoke);
+		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)
+				&& !sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			smokeanim = true;
+			smoke->setPosition(
+					converter::metersToPixels(player->body->GetPosition().x)
+							- 32,
+					converter::metersToPixels(player->body->GetPosition().y)
+							- 23);
+			data->window.draw(*smoke);
+		}
+	}
+
 	//Converts the simulation to the graphical elements
 	for (b2Body *body = world->GetBodyList(); body != nullptr;
 			body = body->GetNext()) { //this for sets as "i" a body from the world, and iterates to the next one until there isn't more bodies
@@ -95,6 +126,39 @@ void GameState::draw() {
 				vpos.y + winscreen.getGlobalBounds().height);
 		winposy = winscreen.getPosition().y;
 	}
+
+	if (player->fuel != 0 && !player->death) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+				&& sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			smokeanim = true;
+			smoke->setPosition(
+					converter::metersToPixels(player->body->GetPosition().x)
+							- 44,
+					converter::metersToPixels(player->body->GetPosition().y)-16);
+			data->window.draw(*smoke);
+
+		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+				&& !sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			smokeanim = true;
+			smoke->setPosition(
+					converter::metersToPixels(player->body->GetPosition().x)
+							- 64,
+					converter::metersToPixels(player->body->GetPosition().y)
+							- 23);
+			data->window.draw(*smoke);
+		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)
+				&& !sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			smokeanim = true;
+			smoke->setPosition(
+					converter::metersToPixels(player->body->GetPosition().x)
+							- 32,
+					converter::metersToPixels(player->body->GetPosition().y)
+							- 23);
+			data->window.draw(*smoke);
+		}
+	}
+
+
 	//Converts the simulation to the graphical elements
 	for (b2Body *body = world->GetBodyList(); body != nullptr;
 			body = body->GetNext()) { //this for sets as "i" a body from the world, and iterates to the next one until there isn't more bodies
@@ -124,11 +188,11 @@ void GameState::draw() {
 
 	data->window.setView(view);
 	if (freezeAll) {
-			data->window.draw(winscreen);
-			if (winscreen.getPosition().y
-					> winposy - winscreen.getGlobalBounds().height)
-				winscreen.move(0, -1.8);
-		}
+		data->window.draw(winscreen);
+		if (winscreen.getPosition().y
+				> winposy - winscreen.getGlobalBounds().height)
+			winscreen.move(0, -1.8);
+	}
 
 	data->window.display();
 }
@@ -206,7 +270,7 @@ void GameState::init() {
 	//Background music setup
 	music.openFromFile("assets/naruto-blue-bird.wav");
 	music.setLoop(true);
-	music.setVolume(25);
+	music.setVolume(45);
 	music.play();
 
 	//Game assets setup
@@ -217,11 +281,32 @@ void GameState::init() {
 			winscreen.getGlobalBounds().height / 2);
 	winscreen.setScale(0.8, 0.8);
 	bg = new Background;
-	player = new Player(elapsedtime);
+	player = new Player(elapsedtime, world);
 	fueldisplay = new Fuel;
 	player->body = createElement(130, 452, 52, 64, b2_dynamicBody, player->tex,
 			player->frames[0]);
 
+	sf::Texture smoktex;
+	smoktex.loadFromFile("assets/fumacinha/1.png");
+	fumacinha.push_back(smoktex);
+	smoktex.loadFromFile("assets/fumacinha/2.png");
+	fumacinha.push_back(smoktex);
+	smoktex.loadFromFile("assets/fumacinha/3.png");
+	fumacinha.push_back(smoktex);
+	smoktex.loadFromFile("assets/fumacinha/4.png");
+	fumacinha.push_back(smoktex);
+	smoktex.loadFromFile("assets/fumacinha/5.png");
+	fumacinha.push_back(smoktex);
+	smoktex.loadFromFile("assets/fumacinha/6.png");
+	fumacinha.push_back(smoktex);
+	smoktex.loadFromFile("assets/fumacinha/7.png");
+	fumacinha.push_back(smoktex);
+
+	smoke = new sf::Sprite;
+	smoke->setTexture(fumacinha[0]);
+	smoke->setScale(0.1, 0.1);
+	smoke->setOrigin(smoke->getGlobalBounds().width / 2,
+			smoke->getGlobalBounds().height / 2);
 	//Walls (flight limits)
 
 	//ground
@@ -291,9 +376,57 @@ GameState::GameState(GameDataRef data) {
 
 void GameState::update() {
 	dt = clock.restart().asSeconds();
+	elapsedtime_exp += dt;
+	if (player->death) {
+		float offset = -25;
+		for (int i = 0; i < 4; i++) {
+			player->fleshparts.push_back(
+					createElement(
+							converter::metersToPixels(
+									player->body->GetPosition().x) + offset,
+							converter::metersToPixels(
+									player->body->GetPosition().y), 25, 25,
+							b2_dynamicBody, player->tex,
+							sf::IntRect(132, 91, 25, 25)));
+			offset += 25;
+		}
+	} else {
+		//elapsedtime_exp = 0;
+	}
 	elapsedtime += dt;
-	if (elapsedtime >= 0.9)
+	if (elapsedtime >= 0.9) {
 		elapsedtime = 0.3;
+	}
+	if (smokeanim) {
+		smokeclock += dt;
+		if (smokeclock > 0.1) {
+			smokeclock = 0;
+			if (i < 7) {
+				i++;
+			}
+			if (i == 7) {
+				i = 0;
+			}
+			smoke->setTexture(fumacinha[i]);
+		}
+	}
+	if (elapsedtime_exp > 1.5) {
+		if (player->res) {
+			player->body = createElement(130, 452, 52, 64, b2_dynamicBody,
+					player->tex, player->frames[0]);
+			b2Vec2 pos = player->checkpoint->GetPosition();
+			pos.y -= converter::pixelsToMeters(60);
+			player->body->SetTransform(pos, converter::degToRad(0));
+			player->fuel = 25;
+			player->res = false;
+		}
+		for (auto i : player->fleshparts) {
+			if (i != NULL)
+				world->DestroyBody(i);
+			player->fleshparts.pop_back();
+		}
+		elapsedtime_exp = 0;
+	}
 	sf::Event event;
 	while (data->window.pollEvent(event)) {
 		if (event.type == sf::Event::Closed)

@@ -120,6 +120,7 @@ void MenuState::handleInput() {
 				break;
 			}
 			if (event.key.code == sf::Keyboard::Escape && inOptions) {
+				enterOption.play();
 				inOptions = false;
 				break;
 			}
