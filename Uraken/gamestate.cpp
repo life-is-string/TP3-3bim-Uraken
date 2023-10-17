@@ -315,14 +315,14 @@ void GameState::init() {
 
 	//lake
 	createElement(200, 692, 16000, 170, b2_staticBody,
-			sf::Color { 159, 159, 159 });
+			sf::Color { 220, 220, 220 });
 
 	//left wall
 	createElement(-320, 660, 16, 1800, b2_staticBody, sf::Color::Transparent);
 
 	//sky
-	createElement(-985.8, -530, 20000, 1000, b2_staticBody, sf::Color { 176,
-			176, 176 });
+	createElement(-985.8, -530, 20000, 1000, b2_staticBody, sf::Color { 227,
+			227, 227 });
 
 	//Platforms setup
 
