@@ -1,38 +1,54 @@
-# TP3-3bim-Uraken
-A Box2d and SFML game made with C++
-
-URAKEN - LINGUAGENS E TECNICAS DE PROGRAMAÇÃO - INFO2
+LINGUAGENS E TÉCNICAS DE PROGRAMAÇÃO - INFO2
 -------------------------------------------------------------------------------------------
 Grupo 8: 
 - Mel Raposeiras Ricaldoni 
 - Núbia Torres de Oliveira
 - Sarah dos Santos Oliveira
--------------------------------------------------------------------------------------------
-Instruções para rodar o projeto:
 
-Em primeiro plano, cabe destacar que o projeto "Uraken" foi desenvolvido utlizando as 
-bibliotecas SFML e Box2D. Nesse sentido, é preciso realizar a implementação correta
-de ambas. 
+# Uraken - Platformer game with physics!
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Windows](https://img.shields.io/badge/platform-Windows-blue)]()
 
-SFML
-- A versão utilizada da biblioteca para o desenvolvimento foi a 2.5.1, sertifique-se 
-de baixa-la corretamente.
-- Em seguida, nas configurações do projeto inclua-a corretamente, adicione as bibliotecas
-SFML de graphics, audio, window e system.
+Um jogo platformer desenvolvido em C++ com SFML e Box2D como projeto de conclusão de curso do ensino médio técnico.
 
-Box2d
-- Baixe a biblioteca compilada para o compilador utilizado, na versão 2.3.0.
-- Adicione-a nas configurações do projeto do mesmo modo que a SFML, inclua o \include
-e o \lib.
+## Dependencies
 
-MingW
-- A versão utilizada foi a 7.3.0.
-- Nas configurações do projeto, forneça o endereço do MingW baixado.
-- Após realizar os includes necessários aplique as mudanças e feche as configurações.
+- **Windows 7/8/10/11** (64-bit)
+- **SFML 2.5.1 GCC 7.3.0 MinGW (SEH) - 64-bit** [Download](https://www.sfml-dev.org/download/sfml/2.5.1/)
+- **MinGW-w64 7.3.0** - [Download](https://sourceforge.net/projects/mingw-w64/)
+- **CMake 3.20+** - [Download](https://cmake.org/download/)
 
-Ao seguir os passos acima o projeto estará pronto para ser executado.
-1° Biuld o projeto: Você pode selecionar as teclas crtrl+B ou algum dos botões de
-biuld da IDE.
-2° Execute: Você pode selecionar as teclas ctrl+11 ou algum dos botões para executar
-da IDE - execute como "Local C/C++ Application". 
+## 🚀 Building
 
+### 1. Clone
+```bash
+git clone https://github.com/seu-usuario/Uraken.git
+cd Uraken
+```
+### 2. Dependencies download
+**SFML**
+```powershell
+cd Uraken/libs
+Invoke-WebRequest -Uri "https://www.sfml-dev.org/files/SFML-2.5.1-windows-gcc-7.3.0-mingw-64-bit.zip" -OutFile "SFML.zip"
+Expand-Archive -Path SFML.zip -DestinationPath .
+Rename-Item -Path "SFML-2.5.1" -NewName "SFML"
+Remove-Item SFML.zip
+cd ..
+```
+**Box2D + lib build**
+```powershell
+cd Uraken/libs
+git clone https://github.com/erincatto/box2d.git
+cd box2d
+git checkout v2.4.0
+mkdir build && cd build
+cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+mingw32-make box2d
+cd ../../..
+```
+### 3. Set the environment
+```powershell
+$env:Path = "C:\mingw64\bin;$env:Path"
+gcc --version #(deve retornar mingw 7.3.0)
+```
+### 4. Compile and run the project running the build.bat
