@@ -13,9 +13,10 @@ Um jogo platformer desenvolvido em C++ com SFML e Box2D como projeto de conclusÃ
 
 ## Dependencies
 
-- **Windows 7/8/10/11** (64-bit)
+- **Windows 7/8/10/11** (64-bit) 
 - **SFML 2.5.1 GCC 7.3.0 MinGW (SEH) - 64-bit** [Download](https://www.sfml-dev.org/download/sfml/2.5.1/)
-- **MinGW-w64 7.3.0** - [Download](https://sourceforge.net/projects/mingw-w64/)
+- **Box2D 2.4.0** [Download](https://github.com/erincatto/box2d/releases/tag/v2.4.0)
+- **MinGW-w64 7.3.0** - [Download](https://sourceforge.net/projects/mingw-w64/) -> add the bin folder to your PATH variables
 - **CMake 3.20+** - [Download](https://cmake.org/download/)
 
 ## ðŸš€ Building
