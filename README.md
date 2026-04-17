@@ -9,7 +9,9 @@ Grupo 8:
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Windows](https://img.shields.io/badge/platform-Windows-blue)]()
 
-Um jogo platformer desenvolvido em C++ com SFML e Box2D como projeto de conclusão de curso do ensino médio técnico.
+https://github.com/user-attachments/assets/e64f1c07-1741-45fd-8cdb-8460560899ad
+
+A C++ && Box2d && SFML game 
 
 ## Dependencies
 
